@@ -6002,3 +6002,88 @@ body::before {
         padding: 6px 10px !important;
     }
 }
+/* ─── SMART COMPARISON DYNAMIC CATALOG ─── */
+.comp-cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 15px;
+}
+.comp-cat-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 25px 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+.comp-cat-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+}
+.comp-cat-card:hover {
+    transform: translateY(-4px);
+    border-color: #00d2d3;
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 20px rgba(0, 210, 211, 0.15);
+}
+.comp-sticky-header {
+    position: sticky;
+    top: 0;
+    background: var(--bg-color); /* Main body bg */
+    z-index: 10;
+    padding: 10px 0 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.comp-products-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.comp-product-row {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.comp-product-row:hover, .comp-product-row.active {
+    border-color: #00d2d3;
+    background: rgba(0, 210, 211, 0.05);
+}
+.comp-product-row img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-right: 15px;
+    border-radius: 8px;
+    background: white;
+    padding: 5px;
+}
+.comp-product-info {
+    flex: 1;
+}
+.comp-product-info h4 {
+    margin: 0 0 6px 0;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.95);
+}
+.comp-product-price {
+    font-size: 13px;
+    color: #4ade80; /* Green tint for good prices */
+    font-weight: 600;
+}
+.comp-back-btn {
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+.comp-back-btn:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
