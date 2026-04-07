@@ -702,8 +702,10 @@ function switchView(viewId, params = null) {
     activeView = viewId;
     
     // Hide all views
-    document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-    
+    document.querySelectorAll('.view').forEach(v => {
+        v.classList.remove('active');
+        v.style.display = 'none';
+    });    
     // Show target view
     const target = document.getElementById(`view-${viewId}`);
     if (target) {
