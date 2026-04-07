@@ -918,7 +918,7 @@ function renderModernCatalogGrid() {
         const name = config.name[lang] || config.name.uz;
         return `
             <div class="catalog-card-premium fade-in-up" 
-                 style="background: ${config.color || 'var(--primary)'};" 
+                 style="background: ${config.color || 'var(--primary)'} !important;" 
                  onclick="renderSubCategoryList('${id}')">
                 <img src="${config.image}" alt="${name}" class="catalog-card-image">
                 <div class="card-content">
