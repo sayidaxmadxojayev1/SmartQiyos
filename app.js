@@ -4,10 +4,10 @@
 // --- DATA ---
 const STORES = [
     // Electronics
-    { id: 'texnomart', name: 'Texnomart', logo: 'https://texnomart.uz/favicon.ico', rating: 4.8, rates: { 3: 0, 6: 0, 12: 12, 18: 24, 24: 36 }, category: 'electronics', url: 'https://texnomart.uz', terms: { uz: '12 oygacha 0%', ru: 'до 12 мес 0%', en: 'up to 12 mo 0%' }, docs: { uz: 'Faqat pasport', ru: 'Только паспорт', en: 'Passport only' }, requirements: { passport: true, income: false }, showOnHome: true, brandColor: '#FFC107', landingImage: 'texnomart_appliances_1775573151660.png' },
-    { id: 'mediapark', name: 'MediaPark', logo: 'https://mediapark.uz/favicon.ico', rating: 4.5, rates: { 3: 0, 6: 5, 12: 15, 18: 20, 24: 30 }, category: 'electronics', url: 'https://mediapark.uz', terms: { uz: '24 oygacha bo\'lib to\'lash', ru: 'рассрочка до 24 мес', en: 'installment up to 24 mo' }, docs: { uz: 'Pasport va daromad', ru: 'Паспорт и доход', en: 'Passport and income' }, requirements: { passport: true, income: true }, showOnHome: true, brandColor: '#E31E24', landingImage: 'mediapark_tech_1775573167572.png' },
-    { id: 'idea', name: 'Idea', logo: 'https://idea.uz/favicon.ico', rating: 4.2, rates: { 3: 0, 6: 0, 12: 0, 18: 15, 24: 25 }, category: 'electronics', url: 'https://idea.uz', terms: { uz: 'Muddatli to\'lov 0%', ru: 'Рассрочка 0%', en: '0% Installment' }, docs: { uz: 'Faqat pasport', ru: 'Только паспорт', en: 'Passport only' }, requirements: { passport: true, income: false }, showOnHome: true, brandColor: '#4CAF50', landingImage: 'idea_computers_1775573181700.png' },
-    { id: 'radius', name: 'Radius', logo: 'https://radius.uz/favicon.ico', rating: 4.4, rates: { 3: 0, 6: 0, 12: 15, 18: 25, 24: 35 }, category: 'electronics', url: 'https://radius.uz', terms: { uz: 'Sifatli xizmat', ru: 'Качественный сервис', en: 'Quality service' }, docs: { uz: 'Pasport', ru: 'Паспорт', en: 'Passport' }, requirements: { passport: true, income: false }, showOnHome: true, brandColor: '#7C3AED', landingImage: 'radius_smartphones_1775573199355.png' },
+    { id: 'texnomart', name: 'Texnomart', logo: 'https://texnomart.uz/favicon.ico', rating: 4.8, rates: { 3: 0, 6: 0, 12: 12, 18: 24, 24: 36 }, category: 'electronics', url: 'https://texnomart.uz', terms: { uz: '12 oygacha 0%', ru: 'до 12 мес 0%', en: 'up to 12 mo 0%' }, docs: { uz: 'Faqat pasport', ru: 'Только паспорт', en: 'Passport only' }, requirements: { passport: true, income: false }, showOnHome: true, brandColor: '#FFC107', landingImage: 'images/texnomart_render.png' },
+    { id: 'mediapark', name: 'MediaPark', logo: 'https://mediapark.uz/favicon.ico', rating: 4.5, rates: { 3: 0, 6: 5, 12: 15, 18: 20, 24: 30 }, category: 'electronics', url: 'https://mediapark.uz', terms: { uz: '24 oygacha bo\'lib to\'lash', ru: 'рассročka до 24 мес', en: 'installment up to 24 mo' }, docs: { uz: 'Pasport va daromad', ru: 'Паспорт и доход', en: 'Passport and income' }, requirements: { passport: true, income: true }, showOnHome: true, brandColor: '#E31E24', landingImage: 'images/mediapark_render.png' },
+    { id: 'idea', name: 'Idea', logo: 'https://idea.uz/favicon.ico', rating: 4.2, rates: { 3: 0, 6: 0, 12: 0, 18: 15, 24: 25 }, category: 'electronics', url: 'https://idea.uz', terms: { uz: 'Muddatli to\'lov 0%', ru: 'Рассрочка 0%', en: '0% Installment' }, docs: { uz: 'Faqat pasport', ru: 'Только паспорт', en: 'Passport only' }, requirements: { passport: true, income: false }, showOnHome: true, brandColor: '#4CAF50', landingImage: 'images/idea_render.png' },
+    { id: 'radius', name: 'Radius', logo: 'https://radius.uz/favicon.ico', rating: 4.4, rates: { 3: 0, 6: 0, 12: 15, 18: 25, 24: 35 }, category: 'electronics', url: 'https://radius.uz', terms: { uz: 'Sifatli xizmat', ru: 'Качественный сервис', en: 'Quality service' }, docs: { uz: 'Pasport', ru: 'Паспорт', en: 'Passport' }, requirements: { passport: true, income: false }, showOnHome: true, brandColor: '#7C3AED', landingImage: 'images/radius_render.png' },
     
     // Furniture
     { id: 'eskiz', name: 'Eskiz Mebel', logo: 'https://eskiz.uz/favicon.ico', rating: 4.7, rates: { 3: 0, 6: 0, 12: 12, 18: 22, 24: 30 }, category: 'furniture', url: 'https://eskiz.uz', terms: { uz: '12 oygacha 0%', ru: '12 мес 0%', en: '12 mo 0%' }, docs: { uz: 'Faqat pasport', ru: 'Только паспорт', en: 'Passport only' }, requirements: { passport: true, income: false }, showOnHome: true },
@@ -716,12 +716,18 @@ function switchView(viewId, params = null) {
     if (viewId === 'home') {
         renderModernCatalogGrid();
         renderStores();
-    } else if (viewId === 'catalog') {
-        renderModernCatalogGrid();
-    } else if (viewId === 'favorites') {
-        renderFavorites();
-    } else if (viewId === 'budget') {
-        initBudgetSearch();
+    } else {
+        clearStoreSelections();
+        if (viewId === 'catalog') {
+            renderModernCatalogGrid();
+        } else if (viewId === 'favorites') {
+            renderFavorites();
+        } else if (viewId === 'budget') {
+            initBudgetSearch();
+        } else if (viewId === 'calculator') {
+            // Re-run calculation in case price was already entered
+            setTimeout(handleCalcUpdate, 50);
+        }
     }
     
     // Update sidebar active state
@@ -754,7 +760,9 @@ function renderStores(categoryFilter = 'all') {
     container.innerHTML = filteredStores.map(store => {
         const brandColor = store.brandColor || 'var(--primary)';
         return `
-            <div class="store-card-detailed fade-in-up" onclick="window.open('${store.url}', '_blank')">
+            <div class="store-card-detailed fade-in-up" 
+                 onclick="toggleStoreCard(this, '${brandColor}')"
+                 data-store-id="${store.id}">
                 <div class="store-brand-accent" style="background: ${brandColor}"></div>
                 
                 <div class="store-card-header">
@@ -801,10 +809,131 @@ function renderStores(categoryFilter = 'all') {
     lucide.createIcons();
 }
 
+function toggleStoreCard(element, color) {
+    const isAlreadySelected = element.classList.contains('selected');
+    
+    // Clear all other selections
+    document.querySelectorAll('.store-card-detailed').forEach(card => {
+        card.classList.remove('selected');
+        card.style.backgroundColor = '';
+        card.style.color = '';
+    });
+
+    if (!isAlreadySelected) {
+        element.classList.add('selected');
+        element.style.backgroundColor = color;
+        // Adjust text color for contrast if background is dark
+        // Simple logic: if not yellow, use white
+        if (color !== '#FFC107') {
+           element.style.color = '#fff';
+        } else {
+           element.style.color = '#1a1a2e';
+        }
+    }
+}
+
+function clearStoreSelections() {
+    document.querySelectorAll('.store-card-detailed').forEach(card => {
+        card.classList.remove('selected');
+        card.style.backgroundColor = '';
+        card.style.color = '';
+    });
+}
+
+// ─── CALCULATOR MODULE ───────────────────────────────────────────────────────
+let calcSelectedMonths = 12;
+
+function selectCalcDuration(months) {
+    calcSelectedMonths = months;
+    document.querySelectorAll('.calc-tab').forEach(tab => {
+        tab.classList.toggle('active', parseInt(tab.dataset.months) === months);
+    });
+    handleCalcUpdate();
+}
+
+function handleCalcUpdate() {
+    const input = document.getElementById('calc-price-input');
+    const hintEl = document.getElementById('calc-price-hint');
+    const price = parseFloat(input?.value || '0');
+
+    if (!price || price < 500000) {
+        if (hintEl) {
+            hintEl.textContent = price > 0 && price < 500000
+                ? '⚠️ Minimal narx 500 000 so\'m bo\'lishi shart'
+                : 'Minimal narx: 500 000 so\'m';
+            hintEl.style.color = price > 0 && price < 500000 ? '#EF4444' : '';
+        }
+        const area = document.getElementById('calc-results-area');
+        if (area) area.innerHTML = `<div class="calc-empty-state"><i data-lucide="scale" style="width:48px;height:48px;opacity:0.3;"></i><p>Narxni kiriting va muddat tanlang</p></div>`;
+        lucide.createIcons();
+        return;
+    }
+    if (hintEl) { hintEl.textContent = ''; }
+    renderCalcResults(price, calcSelectedMonths);
+}
+
+function renderCalcResults(price, months) {
+    const area = document.getElementById('calc-results-area');
+    if (!area) return;
+
+    // Compute results for all electronics stores
+    const results = STORES
+        .filter(s => s.rates && s.rates[months] !== undefined)
+        .map(store => {
+            const markup = store.rates[months] || 0;
+            const totalAmount = price + (price * markup / 100);
+            const monthly = totalAmount / months;
+            return { store, markup, totalAmount, monthly };
+        })
+        .sort((a, b) => a.monthly - b.monthly);
+
+    if (results.length === 0) {
+        area.innerHTML = `<div class="calc-empty-state"><p>Bu muddat uchun ma'lumot topilmadi</p></div>`;
+        return;
+    }
+
+    const formatNum = n => new Intl.NumberFormat('uz-UZ').format(Math.round(n)).replace(/,/g, ' ');
+
+    const rows = results.map((r, idx) => {
+        const isChampion = idx === 0;
+        const brand = r.store.brandColor || '#00d2d3';
+        const markupLabel = r.markup === 0 ? '<span class="calc-badge-zero">0%</span>' : `<span class="calc-badge-paid">+${r.markup}%</span>`;
+        return `
+        <div class="calc-result-row ${isChampion ? 'calc-result-best' : ''}">
+            ${isChampion ? '<div class="calc-best-label"><i data-lucide="trophy" style="width:12px;"></i> Eng foydali</div>' : ''}
+            <div class="calc-result-rank" style="background:${brand};color:white;">${idx + 1}</div>
+            <div class="calc-result-store">
+                <img src="${r.store.logo}" alt="${r.store.name}" class="calc-store-logo" onerror="this.style.display='none'">
+                <strong>${r.store.name}</strong>
+            </div>
+            <div class="calc-result-monthly">
+                <span class="calc-monthly-value">${formatNum(r.monthly)}</span>
+                <span class="calc-monthly-label">so'm/oy</span>
+            </div>
+            <div class="calc-result-meta">
+                <div>${markupLabel}</div>
+                <div class="calc-total-label">Jami: <strong>${formatNum(r.totalAmount)} so'm</strong></div>
+            </div>
+            <a href="${r.store.url}" target="_blank" class="calc-buy-btn" style="border-color:${brand};color:${brand};">
+                Sotib olish <i data-lucide="external-link" style="width:13px;"></i>
+            </a>
+        </div>`;
+    }).join('');
+
+    area.innerHTML = `
+    <div class="calc-results-header">
+        <span>${results.length} ta do'kon natijasi · ${months} oy uchun</span>
+        <span class="calc-price-summary">Narx: <strong>${formatNum(price)} so'm</strong></span>
+    </div>
+    <div class="calc-results-list">${rows}</div>`;
+
+    lucide.createIcons();
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 function openComparisonForStore(storeId) {
     preselectedStoreId = storeId;
-    switchView('budget');
-    // The initBudgetSearch will use preselectedStoreId
+    switchView('catalog');
 }
 
 function renderProducts() {
