@@ -5250,28 +5250,30 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 /* ===== MOBILE ADAPTIVITY (ADAPTIVE DESIGN) ===== */
 
-/* Sidebar Toggle Base */
-#open-menu { display: none; }
-#close-menu { display: none; }
+/* Desktop: Hide Mobile Menu Buttons */
+#open-menu { display: none !important; }
+#close-menu { display: none !important; }
 
 @media (max-width: 991px) {
+    /* Mobile: Show Hamburger */
     #open-menu { 
         display: flex !important; 
-        background: rgba(255,255,255,0.1);
+        background: rgba(45, 212, 191, 0.1);
         border: 1px solid rgba(45, 212, 191, 0.3);
         border-radius: 10px;
+        padding: 10px;
     }
 
     .sidebar {
         position: fixed;
-        left: -280px; /* Drawer hidden */
+        left: -300px; /* Fully hidden */
         top: 0;
         bottom: 0;
         width: 280px;
-        z-index: 2000;
+        z-index: 5000; /* Extremely high for mobile overlay */
         transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         background: #031a1a;
-        box-shadow: 15px 0 50px rgba(0,0,0,0.6);
+        box-shadow: 20px 0 60px rgba(0,0,0,0.8);
         border-right: 1px solid rgba(45, 212, 191, 0.2);
     }
 
@@ -5289,46 +5291,64 @@ input:checked + .slider:before { transform: translateX(20px); }
     .main-content {
         margin-left: 0 !important;
         padding: 16px !important;
-        width: 100%;
+        width: 100% !important;
+        max-width: 100% !important;
     }
 
     .header {
         position: sticky;
         top: 0;
-        margin-bottom: 20px;
-        background: rgba(3, 26, 26, 0.9);
+        margin: 0 0 20px 0 !important;
+        padding: 15px !important;
+        background: rgba(3, 26, 26, 0.95);
         backdrop-filter: blur(15px);
         z-index: 1000;
-        border-bottom: 1px solid rgba(45, 212, 191, 0.1);
+        border-bottom: 1px solid rgba(45, 212, 191, 0.15);
     }
 }
 
 @media (max-width: 768px) {
+    /* FORCE 2-COLUMN GRID FOR CATALOG */
     .catalog-grid-modern {
+        display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
+        grid-auto-rows: auto !important;
         gap: 12px !important;
+        padding: 10px !important;
     }
 
     .category-card-modern {
         padding: 15px !important;
         height: auto !important;
-        min-height: 160px;
+        min-height: 150px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
     }
 
     .category-card-modern img {
         width: 50px !important;
         height: 50px !important;
+        margin-bottom: 10px !important;
     }
 
     .category-card-modern h3 {
-        font-size: 14px !important;
+        font-size: 13px !important;
+        line-height: 1.3 !important;
+    }
+
+    /* Subcategory products 2-column too */
+    #products-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
     }
 
     .section-header h2 {
-        font-size: 22px;
+        font-size: 20px;
     }
 
-    /* Stores Grid Fix */
     .stores-grid {
         grid-template-columns: 1fr !important;
         gap: 16px;
@@ -5340,41 +5360,24 @@ input:checked + .slider:before { transform: translateX(20px); }
         padding: 12px !important;
     }
 
-    .header-left {
-        gap: 10px;
-    }
-
     .logo-text {
         font-size: 18px;
     }
 
     .search-container {
-        max-width: 180px;
+        max-width: 160px;
     }
 
-    .product-card {
-        padding: 12px;
-    }
-
-    .store-card-detailed {
-        border-radius: 20px;
-    }
-
-    /* Background Clarity Fix */
+    /* Background pattern simplification */
     body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background: rgba(3, 26, 26, 0.5); /* Darker overlay for mobile pattern */
-        z-index: -1;
-        pointer-events: none;
+        background: rgba(3, 26, 26, 0.9) !important; 
     }
 
-    .btn, .nav-item, .lang-btn {
-        min-height: 44px; /* Finger-friendly touch targets */
+    .btn, .nav-item, .lang-btn, .action-btn {
+        min-height: 48px !important; /* Larger touch area for mobile */
     }
 
-    .price-box .main-price {
-        font-size: 18px;
+    .store-card-detailed h3 {
+        font-size: 16px;
     }
 }
