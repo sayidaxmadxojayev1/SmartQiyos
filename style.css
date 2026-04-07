@@ -5381,3 +5381,116 @@ input:checked + .slider:before { transform: translateX(20px); }
         font-size: 16px;
     }
 }
+
+
+/* ==========================================
+   UI RESTORATION FIXES (IMAGE 2 STYLE)
+   ========================================== */
+
+/* 1. Desktop Navigation Fix */
+#open-menu { display: none !important; }
+
+/* 2. Vibrant Catalog Grid (3-column Desktop) */
+.catalog-grid-modern {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 24px !important;
+    padding: 20px 0 !important;
+}
+
+@media (max-width: 991px) {
+    .catalog-grid-modern {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 16px !important;
+    }
+    #open-menu { display: flex !important; }
+}
+
+@media (max-width: 600px) {
+    .catalog-grid-modern {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* 3. Colorful Catalog Cards (Candy Style) */
+.catalog-card-premium {
+    position: relative !important;
+    height: 190px !important;
+    border-radius: 28px !important;
+    padding: 24px !important;
+    color: white !important;
+    cursor: pointer !important;
+    overflow: hidden !important;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+}
+
+.catalog-card-premium:hover {
+    transform: translateY(-8px) scale(1.02) !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4) !important;
+}
+
+.card-header-inner {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin-bottom: 12px !important;
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+.catalog-card-premium h3 {
+    font-size: 22px !important;
+    font-weight: 800 !important;
+    margin: 0 !important;
+    line-height: 1.1 !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+    color: white !important;
+}
+
+.catalog-card-premium p {
+    font-size: 14px !important;
+    opacity: 0.95 !important;
+    font-weight: 600 !important;
+    position: relative !important;
+    z-index: 10 !important;
+    color: rgba(255,255,255,0.9) !important;
+}
+
+.card-icon {
+    width: 28px !important;
+    height: 28px !important;
+    opacity: 0.9 !important;
+    stroke: white !important;
+}
+
+.catalog-card-image {
+    position: absolute !important;
+    bottom: -15px !important;
+    right: -15px !important;
+    width: 150px !important;
+    height: 150px !important;
+    object-fit: contain !important;
+    z-index: 1 !important;
+    filter: drop-shadow(0 8px 15px rgba(0, 0, 0, 0.3)) !important;
+    pointer-events: none !important;
+    transition: transform 0.4s ease !important;
+}
+
+.catalog-card-premium:hover .catalog-card-image {
+    transform: scale(1.15) rotate(-5deg) !important;
+}
+
+/* 4. Background Clarity (Image 2 follows a lighter dark mode) */
+body::before {
+    background: rgba(3, 26, 26, 0.7) !important; /* Lighter overlay for better card vibrance */
+}
+
+/* Sidebar clean look */
+.sidebar {
+    background: linear-gradient(180deg, #021414 0%, #031a1a 100%) !important;
+}
