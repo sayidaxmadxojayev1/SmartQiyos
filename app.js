@@ -4,10 +4,10 @@
 // --- DATA ---
 const STORES = [
     // Electronics
-    { id: 'texnomart', name: 'Texnomart', logo: 'https://texnomart.uz/favicon.ico', rating: 4.8, rates: { 3: 0, 6: 0, 12: 12, 18: 24, 24: 36 }, category: 'electronics', url: 'https://texnomart.uz', terms: { uz: '12 oygacha 0%', ru: 'до 12 мес 0%', en: 'up to 12 mo 0%' }, docs: { uz: 'Faqat pasport', ru: 'Только паспорт', en: 'Passport only' }, requirements: { passport: true, income: false }, showOnHome: true },
-    { id: 'mediapark', name: 'MediaPark', logo: 'https://mediapark.uz/favicon.ico', rating: 4.5, rates: { 3: 0, 6: 5, 12: 15, 18: 20, 24: 30 }, category: 'electronics', url: 'https://mediapark.uz', terms: { uz: '24 oygacha bo\'lib to\'lash', ru: 'рассрочка до 24 мес', en: 'installment up to 24 mo' }, docs: { uz: 'Pasport va daromad', ru: 'Паспорт и доход', en: 'Passport and income' }, requirements: { passport: true, income: true }, showOnHome: true },
-    { id: 'idea', name: 'Idea', logo: 'https://idea.uz/favicon.ico', rating: 4.2, rates: { 3: 0, 6: 0, 12: 0, 18: 15, 24: 25 }, category: 'electronics', url: 'https://idea.uz', terms: { uz: 'Muddatli to\'lov 0%', ru: 'Рассрочка 0%', en: '0% Installment' }, docs: { uz: 'Faqat pasport', ru: 'Только паспорт', en: 'Passport only' }, requirements: { passport: true, income: false }, showOnHome: true },
-    { id: 'radius', name: 'Radius', logo: 'https://radius.uz/favicon.ico', rating: 4.4, rates: { 3: 0, 6: 0, 12: 15, 18: 25, 24: 35 }, category: 'electronics', url: 'https://radius.uz', terms: { uz: 'Sifatli xizmat', ru: 'Качественный сервис', en: 'Quality service' }, docs: { uz: 'Pasport', ru: 'Паспорт', en: 'Passport' }, requirements: { passport: true, income: false }, showOnHome: true },
+    { id: 'texnomart', name: 'Texnomart', logo: 'https://texnomart.uz/favicon.ico', rating: 4.8, rates: { 3: 0, 6: 0, 12: 12, 18: 24, 24: 36 }, category: 'electronics', url: 'https://texnomart.uz', terms: { uz: '12 oygacha 0%', ru: 'до 12 мес 0%', en: 'up to 12 mo 0%' }, docs: { uz: 'Faqat pasport', ru: 'Только паспорт', en: 'Passport only' }, requirements: { passport: true, income: false }, showOnHome: true, brandColor: '#FFC107', landingImage: 'texnomart_appliances_1775573151660.png' },
+    { id: 'mediapark', name: 'MediaPark', logo: 'https://mediapark.uz/favicon.ico', rating: 4.5, rates: { 3: 0, 6: 5, 12: 15, 18: 20, 24: 30 }, category: 'electronics', url: 'https://mediapark.uz', terms: { uz: '24 oygacha bo\'lib to\'lash', ru: 'рассрочка до 24 мес', en: 'installment up to 24 mo' }, docs: { uz: 'Pasport va daromad', ru: 'Паспорт и доход', en: 'Passport and income' }, requirements: { passport: true, income: true }, showOnHome: true, brandColor: '#E31E24', landingImage: 'mediapark_tech_1775573167572.png' },
+    { id: 'idea', name: 'Idea', logo: 'https://idea.uz/favicon.ico', rating: 4.2, rates: { 3: 0, 6: 0, 12: 0, 18: 15, 24: 25 }, category: 'electronics', url: 'https://idea.uz', terms: { uz: 'Muddatli to\'lov 0%', ru: 'Рассрочка 0%', en: '0% Installment' }, docs: { uz: 'Faqat pasport', ru: 'Только паспорт', en: 'Passport only' }, requirements: { passport: true, income: false }, showOnHome: true, brandColor: '#4CAF50', landingImage: 'idea_computers_1775573181700.png' },
+    { id: 'radius', name: 'Radius', logo: 'https://radius.uz/favicon.ico', rating: 4.4, rates: { 3: 0, 6: 0, 12: 15, 18: 25, 24: 35 }, category: 'electronics', url: 'https://radius.uz', terms: { uz: 'Sifatli xizmat', ru: 'Качественный сервис', en: 'Quality service' }, docs: { uz: 'Pasport', ru: 'Паспорт', en: 'Passport' }, requirements: { passport: true, income: false }, showOnHome: true, brandColor: '#7C3AED', landingImage: 'radius_smartphones_1775573199355.png' },
     
     // Furniture
     { id: 'eskiz', name: 'Eskiz Mebel', logo: 'https://eskiz.uz/favicon.ico', rating: 4.7, rates: { 3: 0, 6: 0, 12: 12, 18: 22, 24: 30 }, category: 'furniture', url: 'https://eskiz.uz', terms: { uz: '12 oygacha 0%', ru: '12 мес 0%', en: '12 mo 0%' }, docs: { uz: 'Faqat pasport', ru: 'Только паспорт', en: 'Passport only' }, requirements: { passport: true, income: false }, showOnHome: true },
@@ -732,6 +732,8 @@ function switchView(viewId, params = null) {
     lucide.createIcons();
 }
 
+let preselectedStoreId = null;
+
 function renderStores() {
     const container = document.getElementById('stores-grid');
     if (!container) return;
@@ -739,22 +741,60 @@ function renderStores() {
     
     const filteredStores = STORES.filter(s => s.showOnHome);
     
-    filteredStores.forEach(store => {
-        const div = document.createElement('div');
-        div.className = 'store-card-premium fade-in-up';
-        div.innerHTML = `
-            <div class="store-badge">${store.rating} <i data-lucide="star" style="width:10px;fill:currentColor"></i></div>
-            <img src="${store.logo}" alt="${store.name}" class="store-logo-img">
-            <h4>${store.name}</h4>
-            <p class="store-term">${store.terms[currentLang]}</p>
-            <div class="store-footer">
-                <span><i data-lucide="file-text"></i> ${store.docs[currentLang]}</span>
+    container.innerHTML = filteredStores.map(store => {
+        const brandColor = store.brandColor || 'var(--primary)';
+        return `
+            <div class="store-card-detailed fade-in-up" onclick="window.open('${store.url}', '_blank')">
+                <div class="store-brand-accent" style="background: ${brandColor}"></div>
+                
+                <div class="store-card-header">
+                    <img src="${store.logo}" alt="${store.name}" class="store-mini-logo">
+                    <div class="store-rating-chip">
+                        ${store.rating} <i data-lucide="star" style="width:12px;fill:currentColor"></i>
+                    </div>
+                </div>
+
+                <div class="store-display-media">
+                    <img src="${store.landingImage || 'https://via.placeholder.com/300x150'}" 
+                         alt="${store.name} preview" 
+                         class="store-hero-img">
+                </div>
+
+                <div class="store-card-body">
+                    <h4>${store.name}</h4>
+                    <div class="store-features-list">
+                        <div class="feature-item">
+                            <i data-lucide="clock"></i> <span>${store.terms[currentLang]}</span>
+                        </div>
+                        <div class="feature-item">
+                            <i data-lucide="file-text"></i> <span>${store.docs[currentLang]}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="store-card-actions" onclick="event.stopPropagation()">
+                    <button class="btn btn-solishtirish" 
+                            style="background-color: ${brandColor};" 
+                            onclick="openComparisonForStore('${store.id}')">
+                        <i data-lucide="scale"></i> Solishtirish
+                    </button>
+                    <button class="btn btn-visit-outline" 
+                            style="border-color: ${brandColor}; color: ${brandColor};" 
+                            onclick="window.open('${store.url}', '_blank')">
+                         Saytga o'tish
+                    </button>
+                </div>
             </div>
         `;
-        div.onclick = () => window.open(store.url, '_blank');
-        container.appendChild(div);
-    });
+    }).join('');
+    
     lucide.createIcons();
+}
+
+function openComparisonForStore(storeId) {
+    preselectedStoreId = storeId;
+    switchView('budget');
+    // The initBudgetSearch will use preselectedStoreId
 }
 
 function renderProducts() {
@@ -995,7 +1035,11 @@ function initBudgetSearch() {
     
     const fits = PRODUCTS.filter(p => {
         const monthly = (p.price * 1.15) / months;
-        return monthly <= maxMonthly;
+        const matchesBudget = monthly <= maxMonthly;
+        if (preselectedStoreId) {
+            return matchesBudget && p.storeId === preselectedStoreId;
+        }
+        return matchesBudget;
     });
     
     if (fits.length === 0) {
