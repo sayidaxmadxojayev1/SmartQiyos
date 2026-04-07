@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartQiyos - Narxlar va Kredit Agregatori</title>
-    <link rel="stylesheet" href="style.css?v=2.5.3">
+    <link rel="stylesheet" href="style.css?v=2.5.4">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
@@ -195,69 +195,54 @@
 
                 <!-- Budget View -->
                 <section id="view-budget" class="view" style="display: none;">
-                    <!-- Price & Term Inputs Row -->
-                    <div style="max-width: 800px; margin: 0 auto 15px auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div>
-                            <label style="display:block; margin-bottom: 8px; font-size: 13px; font-weight: 700; color: var(--text-light); text-transform: uppercase;">Mahsulot tan narxi (so'm)</label>
-                            <div class="glass" style="padding: 12px 15px; border-radius: 12px;">
-                                <input type="number" id="budget-price-input" oninput="handleSmartSearch()" placeholder="Misol: 5 000 000" style="border: none; background: transparent; width: 100%; outline: none; font-size: 16px; color: white;">
+                    <!-- Dynamic Catalog Feature Content -->
+                    <div id="comparison-premium-content">
+                        
+                        <!-- State 1: Category View -->
+                        <div id="comparison-category-view">
+                            <div class="section-header" style="flex-direction: column; align-items: flex-start; gap: 10px; margin-bottom: 20px;">
+                                <h2 style="margin-bottom: 5px; color: var(--primary-dark);">Aqlli Solishtiruv <span style="font-size: 24px; vertical-align: middle;">👑</span></h2>
+                                <p style="color: var(--text-light); font-size: 14px;">Qaysi turdagi mahsulotni solishtirmoqchisiz? Kategoriyani tanlang.</p>
+                            </div>
+                            
+                            <div id="comp-cat-grid" class="comp-cat-grid">
+                                <!-- Category cards injected via JS -->
                             </div>
                         </div>
-                        <div>
-                            <label style="display:block; margin-bottom: 8px; font-size: 13px; font-weight: 700; color: var(--text-light); text-transform: uppercase;">To'lov muddati (oy)</label>
-                            <div class="glass" style="padding: 12px 15px; border-radius: 12px;">
-                                <input type="number" id="budget-term-input" oninput="handleSmartSearch()" placeholder="12 oy" value="12" style="border: none; background: transparent; width: 100%; outline: none; font-size: 16px; color: white;">
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- SEARCH INPUT: Completely separate, own stacking context -->
-                    <div style="max-width: 800px; margin: 0 auto 12px auto; position: relative; z-index: 300;">
-                        <label style="display:block; margin-bottom: 8px; font-size: 13px; font-weight: 700; color: var(--text-light); text-transform: uppercase;">Mahsulot nomi</label>
-                        <div style="display: flex; align-items: center; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 12px 20px; cursor: text; backdrop-filter: blur(10px);" onclick="document.getElementById('budget-search-input').focus()">
-                            <i data-lucide="search" style="color: rgba(255,255,255,0.5); margin-right: 12px; flex-shrink: 0;"></i>
-                            <input 
-                                type="text" 
-                                id="budget-search-input" 
-                                oninput="handleSmartSearch(this)"
-                                placeholder="Model nomi (Samsung, iPhone...)" 
-                                style="border: none; background: transparent; width: 100%; outline: none; font-size: 16px; color: white; pointer-events: auto; cursor: text;"
-                            >
-                        </div>
-                        <!-- Autocomplete Suggestions -->
-                        <div id="search-suggestions" class="search-suggestions"></div>
-                    </div>
-
-                    <!-- CATEGORY SELECTOR: Separate container, dropdown opens downward -->
-                    <div style="max-width: 800px; margin: 0 auto 20px auto; position: relative; z-index: 50;">
-                        <div class="vcat-dropdown" id="smart-cat-dropdown">
-                            <div class="vcat-trigger" id="vcat-trigger-btn" onclick="toggleVcatDropdown()">
-                                <span id="selected-cat-label">Barchasi</span>
-                                <i data-lucide="chevron-down" id="vcat-chevron" style="width:16px; transition: transform 0.3s;"></i>
-                            </div>
-                            <div class="vcat-panel" id="vcat-panel">
-                                <div class="vcat-search-wrap">
-                                    <i data-lucide="search" style="width:15px; color:rgba(255,255,255,0.4);"></i>
-                                    <input type="text" class="vcat-search-input" placeholder="Qidiruv..." oninput="filterVcatList(this.value)" id="vcat-search-input">
+                        <!-- State 2 & 3: Product View & Comparison Table -->
+                        <div id="comparison-product-view" style="display: none;">
+                            <div class="comp-sticky-header">
+                                <button class="btn btn-outline comp-back-btn" onclick="backToComparisonCategories()" style="border: 1px solid #7B39ED; color: #7B39ED; display: flex; align-items: center; border-radius: 12px; padding: 10px 16px; font-weight: 600;">
+                                    <i data-lucide="arrow-left" style="width: 18px; margin-right: 6px;"></i> Kategoriyalarga qaytish
+                                </button>
+                                <div class="search-container modern-sub" style="margin-top: 15px;">
+                                    <i data-lucide="search" class="search-icon"></i>
+                                    <input type="text" id="comp-contextual-search" placeholder="Ushbu toifadan qidirish (S24, iPhone...)" oninput="filterComparisonProducts(this.value)">
                                 </div>
-                                <div class="vcat-options" id="vcat-options-list"></div>
+                                <div style="margin-top: 15px; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.03); padding: 10px 15px; border-radius: 12px;">
+                                    <label style="font-size: 13px; font-weight: 600; color: #6B7280; margin: 0;">To'lov muddati:</label>
+                                    <select id="comp-months-select" onchange="updateCompMonths(this.value)" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #E5E8ED; outline: none; background: white; flex: 1;">
+                                        <option value="3">3 oy</option>
+                                        <option value="6">6 oy</option>
+                                        <option value="12" selected>12 oy</option>
+                                        <option value="18">18 oy</option>
+                                        <option value="24">24 oy</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Product List -->
+                            <div id="comparison-products-list" class="comp-products-list" style="margin-bottom: 30px;">
+                                <!-- Products injected via JS -->
+                            </div>
+                            
+                            <!-- Comparison Table -->
+                            <div id="comparison-result-table">
+                                <!-- Dynamic ranking table goes here -->
                             </div>
                         </div>
-                        <input type="hidden" id="smart-cat-select" value="all">
                     </div>
-
-                    <!-- Dynamic Filters Panel (e.g. RAM, Volume) -->
-                    <div id="dynamic-filters-panel" class="filter-panel glass" style="max-width: 800px; margin: 0 auto 30px auto; display: none;">
-                        <!-- Filter groups injected here based on category -->
-                    </div>
-
-                    <div id="smart-search-loading" class="smart-loading">
-                        <div class="spinner-revamped"></div>
-                        <span style="color: rgba(255,215,0,0.8); font-weight: 500;">Qidirilmoqda...</span>
-                    </div>
-
-                    <div id="budget-controls-container" style="max-width: 800px; margin: 0 auto 20px auto;"></div>
-                    <div id="budget-products-grid"></div>
                 </section>
 
                 <!-- Calculator View (Premium Installment Calculator) -->
@@ -625,7 +610,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=1.7.3"></script>
+    <script src="app.js?v=1.7.4"></script>
     <script>
         lucide.createIcons();
     </script>
