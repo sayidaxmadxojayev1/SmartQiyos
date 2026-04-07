@@ -5494,3 +5494,156 @@ body::before {
 .sidebar {
     background: linear-gradient(180deg, #021414 0%, #031a1a 100%) !important;
 }
+
+
+/* --- PREMIUM STORE CARDS (Branding Enrichment) --- */
+.stores-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+    gap: 24px !important;
+    padding: 20px 0 !important;
+}
+
+.store-card-detailed {
+    background: #ffffff !important;
+    border-radius: 24px !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    position: relative !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
+    border: 1px solid rgba(0,0,0,0.05) !important;
+    cursor: pointer !important;
+    min-height: 420px !important;
+}
+
+.store-card-detailed:hover {
+    transform: translateY(-10px) scale(1.02) !important;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.12) !important;
+}
+
+.store-brand-accent {
+    height: 4px !important;
+    width: 100% !important;
+}
+
+.store-card-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 16px 20px !important;
+}
+
+.store-mini-logo {
+    height: 28px !important;
+    object-fit: contain !important;
+}
+
+.store-rating-chip {
+    background: #F1F5F9 !important;
+    padding: 4px 10px !important;
+    border-radius: 50px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: #1a1a2e !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+}
+
+.store-display-media {
+    width: 100% !important;
+    height: 160px !important;
+    overflow: hidden !important;
+    background: #f8fafc !important;
+}
+
+.store-hero-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    transition: transform 0.5s ease !important;
+}
+
+.store-card-detailed:hover .store-hero-img {
+    transform: scale(1.1) !important;
+}
+
+.store-card-body {
+    padding: 20px !important;
+    flex-grow: 1 !important;
+}
+
+.store-card-body h4 {
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    margin: 0 0 12px 0 !important;
+}
+
+.store-features-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+}
+
+.feature-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    font-size: 13px !important;
+    color: #475569 !important;
+}
+
+.feature-item i {
+    width: 16px !important;
+    height: 16px !important;
+    color: #94A3B8 !important;
+}
+
+.store-card-actions {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+    padding: 16px 20px !important;
+    background: #f8fafc !important;
+}
+
+.btn-solishtirish {
+    color: white !important;
+    border: none !important;
+    padding: 10px !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-solishtirish:hover {
+    filter: brightness(1.1) !important;
+    transform: translateY(-2px) !important;
+}
+
+.btn-visit-outline {
+    background: white !important;
+    border: 2px solid !important;
+    padding: 10px !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    text-align: center !important;
+}
+
+.btn-visit-outline:hover {
+    background: rgba(0,0,0,0.02) !important;
+    transform: translateY(-2px) !important;
+}
+
