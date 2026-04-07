@@ -1211,6 +1211,32 @@ document.addEventListener('DOMContentLoaded', () => {
     renderStores();
     renderProducts(); // Show featured products on home load
     updateFavoritesBadge();
+
+    // Mobile Menu Toggle
+    const sidebar = document.getElementById('sidebar');
+    const openMenuBtn = document.getElementById('open-menu');
+    const closeMenuBtn = document.getElementById('close-menu');
+
+    if (openMenuBtn && sidebar) {
+        openMenuBtn.addEventListener('click', () => {
+            sidebar.classList.add('active');
+        });
+    }
+
+    if (closeMenuBtn && sidebar) {
+        closeMenuBtn.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+        });
+    }
+
+    // Close menu when clicking nav items on mobile
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+            if (window.innerWidth <= 991) {
+                sidebar.classList.remove('active');
+            }
+        });
+    });
 });
 
 // Bridge functions for index.html event handlers
