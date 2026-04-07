@@ -715,6 +715,23 @@ function switchView(viewId, params = null) {
     }
     
     // Specific logic per view
+    const mainHeader = document.querySelector('.header');
+    const mainContent = document.querySelector('.main-content');
+    
+    if (viewId === 'calculator') {
+        if (mainHeader) mainHeader.style.display = 'none';
+        if (mainContent) {
+            // Save original padding if needed
+            if (!mainContent.dataset.origPt) mainContent.dataset.origPt = mainContent.style.paddingTop;
+            mainContent.style.paddingTop = '20px';
+        }
+    } else {
+        if (mainHeader) mainHeader.style.display = 'flex';
+        if (mainContent) {
+            mainContent.style.paddingTop = mainContent.dataset.origPt || '';
+        }
+    }
+
     if (viewId === 'home') {
         renderModernCatalogGrid();
         renderStores();
