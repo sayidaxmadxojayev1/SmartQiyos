@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartQiyos - Narxlar va Kredit Agregatori</title>
-    <link rel="stylesheet" href="style.css?v=2.2.0">
+    <link rel="stylesheet" href="style.css?v=2.4.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
@@ -260,32 +260,64 @@
                     <div id="budget-products-grid"></div>
                 </section>
 
-                <!-- Calculator View -->
+                <!-- Calculator View (Premium Installment Calculator) -->
                 <div id="view-calculator" class="view" style="display: none;">
                     <section class="calculator-section">
-                        <div class="section-header">
-                            <h2 data-i18n="calc_title">Kredit Kalkulyatori</h2>
+                        <div class="calc-hero-header">
+                            <div class="calc-hero-icon">
+                                <i data-lucide="calculator"></i>
+                            </div>
+                            <div>
+                                <h2>Muddatli To'lov Kalkulyatori</h2>
+                                <p>Do'konlarning oylik to'lovlarini real vaqtda solishtiring</p>
+                            </div>
                         </div>
-                        <div class="calc-container glass">
-                            <div class="input-group">
-                                <label data-i18n="calc_price">Tovar narxi</label>
-                                <input type="number" id="manual-price" value="5000000">
+
+                        <!-- Price Input -->
+                        <div class="calc-card">
+                            <label class="calc-label">
+                                <i data-lucide="tag" style="width:14px;"></i>
+                                Mahsulot narxi (so'm)
+                            </label>
+                            <div class="calc-price-wrap">
+                                <input 
+                                    type="number" 
+                                    id="calc-price-input" 
+                                    class="calc-price-input"
+                                    placeholder="Misol: 5 000 000"
+                                    oninput="handleCalcUpdate()"
+                                    min="500000"
+                                >
+                                <span class="calc-currency">so'm</span>
                             </div>
-                            <div class="input-group">
-                                <label data-i18n="calc_months">Muddat (oy)</label>
-                                <select id="manual-months">
-                                    <option value="3">3 oy</option>
-                                    <option value="6">6 oy</option>
-                                    <option value="12" selected>12 oy</option>
-                                    <option value="24">24 oy</option>
-                                </select>
+                            <p id="calc-price-hint" class="calc-hint">Minimal narx: 500 000 so'm</p>
+                        </div>
+
+                        <!-- Duration Tab Selector -->
+                        <div class="calc-card">
+                            <label class="calc-label">
+                                <i data-lucide="calendar" style="width:14px;"></i>
+                                To'lov muddati
+                            </label>
+                            <div class="calc-duration-tabs" id="calc-duration-tabs">
+                                <button class="calc-tab" data-months="3" onclick="selectCalcDuration(3)">3 oy</button>
+                                <button class="calc-tab" data-months="6" onclick="selectCalcDuration(6)">6 oy</button>
+                                <button class="calc-tab active" data-months="12" onclick="selectCalcDuration(12)">12 oy</button>
+                                <button class="calc-tab" data-months="18" onclick="selectCalcDuration(18)">18 oy</button>
+                                <button class="calc-tab" data-months="24" onclick="selectCalcDuration(24)">24 oy</button>
                             </div>
-                            <div class="comparison-results" id="calculator-results">
-                                <!-- Results will be injected here -->
+                        </div>
+
+                        <!-- Results Placeholder -->
+                        <div id="calc-results-area">
+                            <div class="calc-empty-state">
+                                <i data-lucide="scale" style="width:48px; height:48px; opacity:0.3;"></i>
+                                <p>Narxni kiriting va muddat tanlang</p>
                             </div>
                         </div>
                     </section>
                 </div>
+
 
                 <!-- Favorites View -->
                 <div id="view-favorites" class="view" style="display: none;">
@@ -612,7 +644,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=1.4.2"></script>
+    <script src="app.js?v=1.6.0"></script>
     <script>
         lucide.createIcons();
     </script>
