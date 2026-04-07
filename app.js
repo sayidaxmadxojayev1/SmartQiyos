@@ -742,7 +742,7 @@ function switchView(viewId, params = null) {
         } else if (viewId === 'favorites') {
             renderFavorites();
         } else if (viewId === 'budget') {
-            initBudgetSearch();
+            showComparisonCategories();
         } else if (viewId === 'calculator') {
             setTimeout(handleCalcUpdate, 50);
         } else if (viewId === 'comparison') {
