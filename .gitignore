@@ -1,0 +1,25 @@
+# Project Specifics
+node_modules/
+.gemini/
+.DS_Store
+Thumbs.db
+*.log
+tmp/
+C:/tmp/
+C:/Users/user/.gemini/antigravity/brain/
+.agents/
+.agent/
+_agents/
+_agent/
+/brain/
+# OS specific
+Desktop/
+Documents/
+Downloads/
+Music/
+Pictures/
+Videos/
+# Env
+.env
+.env.local
+.env.*.local
