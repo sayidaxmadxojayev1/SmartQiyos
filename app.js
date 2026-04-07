@@ -734,12 +734,22 @@ function switchView(viewId, params = null) {
 
 let preselectedStoreId = null;
 
-function renderStores() {
-    const container = document.getElementById('stores-grid');
+function filterStoreCategory(cat) {
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.classList.toggle('active', chip.getAttribute('data-category') === cat);
+    });
+    renderStores(cat);
+}
+
+function renderStores(categoryFilter = 'all') {
+    const container = document.getElementById('stores-list');
     if (!container) return;
     container.innerHTML = '';
     
-    const filteredStores = STORES.filter(s => s.showOnHome);
+    let filteredStores = STORES.filter(s => s.showOnHome);
+    if (categoryFilter !== 'all') {
+        filteredStores = filteredStores.filter(s => s.category === categoryFilter);
+    }
     
     container.innerHTML = filteredStores.map(store => {
         const brandColor = store.brandColor || 'var(--primary)';
