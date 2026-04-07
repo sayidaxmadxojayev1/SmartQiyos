@@ -917,11 +917,15 @@ function renderModernCatalogGrid() {
         const lang = currentLang || 'uz';
         const name = config.name[lang] || config.name.uz;
         return `
-            <div class="catalog-card-premium fade-in-up" onclick="renderSubCategoryList('${id}')">
+            <div class="catalog-card-premium fade-in-up" 
+                 style="background: ${config.color || 'var(--primary)'};" 
+                 onclick="renderSubCategoryList('${id}')">
                 <img src="${config.image}" alt="${name}" class="catalog-card-image">
                 <div class="card-content">
-                    <i data-lucide="${config.icon}" class="card-icon"></i>
-                    <h3>${name}</h3>
+                    <div class="card-header-inner">
+                        <i data-lucide="${config.icon}" class="card-icon"></i>
+                        <h3>${name}</h3>
+                    </div>
                     <p>${Object.keys(config.sub).length - 1}+ bo'limlar</p>
                 </div>
             </div>
