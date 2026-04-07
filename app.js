@@ -744,8 +744,9 @@ function switchView(viewId, params = null) {
         } else if (viewId === 'budget') {
             initBudgetSearch();
         } else if (viewId === 'calculator') {
-            // Re-run calculation in case price was already entered
             setTimeout(handleCalcUpdate, 50);
+        } else if (viewId === 'comparison') {
+            showComparisonCategories();
         }
     }
     
@@ -1459,4 +1460,167 @@ function searchInSubCategory(q) {
 function applySubCategorySort(sort) {
     activeSort = sort;
     renderProducts();
+}
+
+// ─── SMART COMPARISON DYNAMIC CATALOG ────────────────────────────────────────────────────────
+
+let compActiveCategory = null;
+let compSearchQuery = '';
+let compActiveMonths = 12;
+
+function showComparisonCategories() {
+    compActiveCategory = null;
+    compSearchQuery = '';
+    const searchInput = document.getElementById('comp-contextual-search');
+    if (searchInput) searchInput.value = '';
+    
+    const catView = document.getElementById('comparison-category-view');
+    const prodView = document.getElementById('comparison-product-view');
+    if (catView) catView.style.display = 'block';
+    if (prodView) prodView.style.display = 'none';
+    
+    const tableArea = document.getElementById('comparison-result-table');
+    if (tableArea) tableArea.innerHTML = '';
+    
+    renderCompCategoryGrid();
+}
+
+function renderCompCategoryGrid() {
+    const grid = document.getElementById('comp-cat-grid');
+    if (!grid) return;
+    
+    let html = '';
+    CATEGORIES.forEach(cat => {
+        html += `
+            <div class="comp-cat-card" onclick="selectComparisonCategory('${cat.id}')">
+                <i data-lucide="${cat.icon}" style="width: 32px; height: 32px; color: #7B39ED; margin-bottom: 12px; display: block;"></i>
+                <h3 style="font-size: 16px; font-weight: 600; margin: 0; color: #111827;">${cat.name}</h3>
+            </div>
+        `;
+    });
+    grid.innerHTML = html;
+    lucide.createIcons();
+}
+
+function selectComparisonCategory(categoryId) {
+    compActiveCategory = categoryId;
+    document.getElementById('comparison-category-view').style.display = 'none';
+    document.getElementById('comparison-product-view').style.display = 'block';
+    document.getElementById('comparison-result-table').innerHTML = '';
+    renderCompProductList();
+}
+
+function backToComparisonCategories() {
+    showComparisonCategories();
+}
+
+function filterComparisonProducts(query) {
+    compSearchQuery = query.toLowerCase();
+    renderCompProductList();
+}
+
+function updateCompMonths(months) {
+    compActiveMonths = parseInt(months);
+    // If a table is currently shown, re-render it
+    const activeResultProduct = document.getElementById('comparison-result-table').getAttribute('data-product-id');
+    if (activeResultProduct) {
+        selectComparisonProduct(parseInt(activeResultProduct));
+    }
+}
+
+function renderCompProductList() {
+    const list = document.getElementById('comparison-products-list');
+    if (!list) return;
+    
+    document.getElementById('comparison-result-table').innerHTML = ''; // Clear results if changing filters
+    document.getElementById('comparison-result-table').removeAttribute('data-product-id');
+
+    let prods = PRODUCTS.filter(p => {
+        const matchCat = compActiveCategory === 'all' || p.category === compActiveCategory;
+        const matchQuery = p.name.toLowerCase().includes(compSearchQuery);
+        return matchCat && matchQuery;
+    });
+
+    if (prods.length === 0) {
+        list.innerHTML = `<div style="padding: 20px; text-align: center; color: #6B7280; font-size: 14px;">Ushbu kategoriyada mahsulot topilmadi...</div>`;
+        return;
+    }
+
+    list.innerHTML = prods.map(p => `
+        <div class="comp-product-row" data-id="${p.id}" onclick="selectComparisonProduct(${p.id})">
+            <img src="${p.image}" alt="${p.name}">
+            <div class="comp-product-info">
+                <h4>${p.name}</h4>
+                <div class="comp-product-price">${formatPrice(p.price)} so'm dan boshlab</div>
+            </div>
+            <i data-lucide="chevron-right" style="color: #9CA3AF; width: 20px;"></i>
+        </div>
+    `).join('');
+    
+    lucide.createIcons();
+}
+
+function selectComparisonProduct(productId) {
+    const tableArea = document.getElementById('comparison-result-table');
+    tableArea.setAttribute('data-product-id', productId);
+    
+    const product = PRODUCTS.find(p => p.id === productId);
+    if (!product) return;
+
+    // Highlight row
+    document.querySelectorAll('.comp-product-row').forEach(row => row.classList.remove('active'));
+    const activeRow = document.querySelector(`.comp-product-row[data-id="${productId}"]`);
+    if (activeRow) activeRow.classList.add('active');
+
+    const price = product.price;
+    const months = compActiveMonths;
+
+    const results = STORES
+        .filter(s => s.rates && s.rates[months] !== undefined)
+        .map(store => {
+            const markup = store.rates[months] || 0;
+            const totalAmount = price + (price * markup / 100);
+            const monthly = totalAmount / months;
+            return { store, markup, totalAmount, monthly };
+        })
+        .sort((a, b) => a.monthly - b.monthly);
+
+    if (results.length === 0) {
+        tableArea.innerHTML = `<div class="calc-empty-state"><p>Bu muddat uchun do'konlarda malumot yo'q</p></div>`;
+        return;
+    }
+
+    const formatNum = n => new Intl.NumberFormat('uz-UZ').format(Math.round(n)).replace(/,/g, ' ');
+
+    const rowsHtml = results.map((r, i) => {
+        const isChampion = i === 0;
+        const brand = r.store.brandColor || '#00d2d3';
+        const markupLabel = r.markup === 0 ? '<span class="calc-badge-zero">0%</span>' : `<span class="calc-badge-paid">+${r.markup}%</span>`;
+        return `
+        <div class="calc-result-row ${isChampion ? 'calc-result-best' : ''}" style="margin-bottom: 8px;">
+            ${isChampion ? '<div class="calc-best-label"><i data-lucide="trophy" style="width:12px;"></i> Eng foydali</div>' : ''}
+            <div class="calc-result-rank" style="background:${brand};color:white;">${i + 1}</div>
+            <div class="calc-result-store">
+                <img src="${r.store.logo}" alt="${r.store.name}" class="calc-store-logo">
+                <strong>${r.store.name}</strong>
+            </div>
+            <div class="calc-result-monthly">
+                <span class="calc-monthly-value">${formatNum(r.monthly)}</span>
+                <span class="calc-monthly-label">so'm/oy</span>
+            </div>
+            <div class="calc-result-meta">
+                <div>${markupLabel}</div>
+                <div class="calc-total-label">Jami: <strong>${formatNum(r.totalAmount)} so'm</strong></div>
+            </div>
+        </div>`;
+    }).join('');
+
+    tableArea.innerHTML = `
+    <div style="padding: 20px; background: #FAFAFA; border: 1px solid #E5E8ED; border-radius: 12px; margin-top: 15px;">
+        <h3 style="font-size: 16px; margin: 0 0 15px 0; color: #111827; display: flex; align-items: center; gap: 8px;"><i data-lucide="bar-chart-2" style="width:18px; color:#7B39ED;"></i> ${product.name} narxlari (${months} oy)</h3>
+        <div class="calc-results-list">${rowsHtml}</div>
+    </div>`;
+
+    tableArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    lucide.createIcons();
 }
