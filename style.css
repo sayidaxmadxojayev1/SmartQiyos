@@ -526,7 +526,7 @@ body[class*="theme-"] .lang-btn.active {
     margin-top: 20px;
 }
 
-/* ===== STORE CARDS вЂ” White on Dark ===== */
+/* ===== STORE CARDS Ð²Ðâ White on Dark ===== */
 .store-card-detailed {
     display: flex;
     flex-direction: column;
@@ -634,7 +634,7 @@ body[class*="theme-"] .lang-btn.active {
     border-radius: 12px;
 }
 
-/* Store Filters вЂ” hidden per V2 design spec */
+/* Store Filters Ð²Ðâ hidden per V2 design spec */
 .store-filters {
     display: none !important;
 }
@@ -2521,7 +2521,7 @@ input:checked + .slider:before { transform: translateX(20px); }
 /* Autocomplete Suggestions */
 
 /* ==========================================
-   SEARCH BOX вЂ” NUCLEAR STACKING FIX
+   SEARCH BOX Ð²Ðâ NUCLEAR STACKING FIX
    Search box is always above the vcat panel
    ========================================= */
 .search-box-container {
@@ -2749,7 +2749,7 @@ input:checked + .slider:before { transform: translateX(20px); }
     border-left-color: #FFD700;
 }
 
-/* Fix mobile scroll containment and dropdown clipping вЂ” store-filters hidden per V2 */
+/* Fix mobile scroll containment and dropdown clipping Ð²Ðâ store-filters hidden per V2 */
 .store-filters {
     display: none !important;
 }
@@ -4693,7 +4693,7 @@ input:checked + .slider:before { transform: translateX(20px); }
 }
 
 /* ============================================================
-   SMART FILTER & CATALOG SYSTEM — New Styles
+   SMART FILTER & CATALOG SYSTEM â New Styles
    ============================================================ */
 
 /* --- Smart Product Cards Grid --- */
@@ -5064,7 +5064,7 @@ input:checked + .slider:before { transform: translateX(20px); }
     max-width: 320px;
 }
 
-/* --- Comparison Button — Active / Ready State --- */
+/* --- Comparison Button â Active / Ready State --- */
 #smart-compare-start-btn {
     transition: all 0.3s ease;
     position: relative;
@@ -5684,7 +5684,7 @@ body::before {
 
 
 /* ======================================================
-   PREMIUM INSTALLMENT CALCULATOR � UI Styles
+   PREMIUM INSTALLMENT CALCULATOR  UI Styles
    ====================================================== */
 
 .calculator-section {
@@ -6002,7 +6002,7 @@ body::before {
         padding: 6px 10px !important;
     }
 }
-/* ─── SMART COMPARISON DYNAMIC CATALOG ─── */
+/* âââ SMART COMPARISON DYNAMIC CATALOG âââ */
 .comp-cat-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -6087,3 +6087,15 @@ body::before {
 .comp-back-btn:hover {
     background: rgba(255, 255, 255, 0.1) !important;
 }
+/* Hero Section */
+.hero-section { position: relative; background: linear-gradient(135deg, rgba(5, 38, 38, 0.95), rgba(0, 0, 0, 0.95)), url('tech-bg.png'); background-size: cover; background-position: center; border-radius: 20px; padding: 80px 20px; text-align: center; margin-bottom: 30px; }
+.hero-section h1 { font-size: 48px; font-weight: 800; color: #fff; margin-bottom: 20px; letter-spacing: -1px; }
+.hero-section .subtitle { font-size: 18px; color: rgba(255, 255, 255, 0.8); margin-bottom: 40px; max-width: 600px; margin: 0 auto 30px; }
+.hero-search-container { display: flex; max-width: 600px; margin: 0 auto 30px; gap: 10px; }
+.search-input-wrapper { flex: 1; }
+.search-input-wrapper input { width: 100%; padding: 15px 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); color: #fff; }
+.btn-hero-search { background: #00d2d3; color: #052626; border: none; padding: 0 30px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+.btn-hero-search:hover { background: #00b3b4; transform: translateY(-2px); }
+.hero-quick-chips { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.hero-quick-chips .chip { padding: 8px 20px; border-radius: 20px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; cursor: pointer; transition: 0.3s; }
+.hero-quick-chips .chip.active, .hero-quick-chips .chip:hover { background: #00d2d3; color: #052626; border-color: #00d2d3; }
