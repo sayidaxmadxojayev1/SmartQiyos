@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartQiyos | Premium Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[#001211] bg-tech text-white flex h-screen overflow-hidden custom-scrollbar relative font-sans">
+
+    <!-- Antigravity Background -->
+    <div class="tech-bg"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    <div class="glow-orb orb-3"></div>
+
+    <!-- Sidebar -->
+    <aside class="w-72 glass-sidebar flex flex-col p-6 z-10 relative">
+        <h1 class="text-2xl font-bold text-[#00ffcc] mb-10">Smart<span class="text-white">Qiyos</span></h1>
+        
+        <nav class="flex-1 space-y-2 mt-4">
+            <button onclick="showSection('home', 'navHome')" id="navHome" class="sidebar-btn active-glow w-full flex items-center p-4 rounded-xl text-gray-400 hover:text-white transition">
+                <i class="fas fa-home mr-4 w-6"></i> Asosiy
+            </button>
+            <button onclick="openCatalog()" id="navKatalog" class="sidebar-btn w-full flex items-center p-4 rounded-xl text-gray-400 hover:text-white transition">
+                <i class="fas fa-th-large mr-4 w-6"></i> Katalog
+            </button>
+            <button onclick="showSection('kalkulyator', 'navCalc')" id="navCalc" class="sidebar-btn w-full flex items-center p-4 rounded-xl text-gray-400 hover:text-white transition">
+                <i class="fas fa-calculator mr-4 w-6"></i> Kalkulyator
+            </button>
+            <button onclick="checkVip('vip-search')" class="sidebar-btn w-full flex items-center p-4 rounded-xl text-gray-400 hover:text-white transition">
+                <i class="fas fa-bolt mr-4 w-6"></i> Aqlli qidiruv <span class="vip-badge" style="margin-left:auto">👑</span>
+            </button>
+            <button onclick="checkVip('compare')" class="sidebar-btn w-full flex items-center p-4 rounded-xl text-gray-400 hover:text-white transition">
+                <i class="fas fa-balance-scale mr-4 w-6"></i> Solishtirish <span class="vip-badge" style="margin-left:auto">👑</span>
+            </button>
+            <button onclick="showSection('favorites', 'navFav')" id="navFav" class="sidebar-btn w-full flex items-center p-4 rounded-xl text-gray-400 hover:text-white transition mt-6">
+                <i class="fas fa-heart mr-4 w-6"></i> Sevimli
+            </button>
+            <button onclick="showSection('profile', 'navProf')" id="navProf" class="sidebar-btn w-full flex items-center p-4 rounded-xl text-gray-400 hover:text-white transition">
+                <i class="fas fa-user mr-4 w-6"></i> Profil
+            </button>
+            <button onclick="showSection('feedback', 'navFeed')" id="navFeed" class="sidebar-btn w-full flex items-center p-4 rounded-xl text-gray-400 hover:text-white transition">
+                <i class="fas fa-comment-dots mr-4 w-6"></i> Takliflar
+            </button>
+        </nav>
+
+        <button class="mt-auto bg-[#2e3477] text-[#a0a5f5] p-5 rounded-2xl flex items-center justify-center font-bold hover:bg-[#39408b] transition w-full mt-10">
+            <i class="fas fa-shield-alt mr-3"></i> Admin
+        </button>
+    </aside>
+
+    <!-- Main View -->
+    <main class="flex-1 p-10 overflow-y-auto relative z-10 custom-scrollbar">
+        
+        <header class="flex justify-between items-center mb-10">
+            <h2 id="page-title" class="text-3xl font-bold">Internet Do'konlar</h2>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <input type="text" id="main-search" oninput="handleSearch()" placeholder="Mahsulot qidirish..." class="bg-[#002320] border border-[#01312b] rounded-full py-2 px-10 focus:border-[#00ffcc] outline-none transition-all w-80 shadow-lg placeholder-gray-500">
+                    <i class="fas fa-search absolute left-4 top-3 text-gray-500"></i>
+                </div>
+                <div class="text-sm font-bold bg-[#002320] rounded-full px-4 py-2 border border-[#01312b]">
+                    <span class="text-[#00ffcc] cursor-pointer">UZ</span> | <span class="text-gray-500 cursor-pointer hover:text-white transition">RU</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stores View -->
+        <div id="section-home" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Dynamically via JS -->
+        </div>
+
+        <!-- Products / Search Results View -->
+        <div id="section-products" class="hidden">
+            <button onclick="resetHome()" class="mb-6 text-[#00ffcc] hover:underline flex items-center gap-2 font-bold"><i class="fas fa-arrow-left"></i> Orqaga qaytish</button>
+            <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-6" id="products-grid">
+                <!-- Dynamically via JS -->
+            </div>
+        </div>
+
+        <!-- Profile View -->
+        <div id="section-profile" class="hidden fade-in py-10" id="profile-container">
+            <!-- Dynamic via JS -->
+        </div>
+
+        <!-- Favorites View -->
+        <div id="section-favorites" class="hidden fade-in">
+            <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-6" id="favorites-grid">
+                <!-- Dynamic via JS -->
+            </div>
+        </div>
+
+        <!-- Feedback & Support Chat -->
+        <div id="section-feedback" class="hidden fade-in max-w-4xl mx-auto h-[70vh] flex flex-col bg-[#001a18] border border-[#01312b] rounded-[32px] overflow-hidden">
+            <div class="border-b border-[#01312b] p-6 flex items-center bg-[#002320]">
+                <div class="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center text-white mr-4"><i class="fas fa-robot text-xl"></i></div>
+                <div>
+                    <h3 class="font-bold text-lg">Yordam Markazi</h3>
+                    <p class="text-xs text-[#00ffcc]">Admin online</p>
+                </div>
+            </div>
+            <div id="chat-history" class="flex-1 p-6 overflow-y-auto custom-scrollbar flex flex-col gap-4">
+                <div class="flex">
+                    <div class="bg-white/5 border border-white/10 text-white rounded-2xl rounded-tl-none px-6 py-4 max-w-[80%]">
+                        Assalomu alaykum! Fikr va takliflaringizni yozib qoldiring.
+                        <div class="text-left mt-2 text-xs text-gray-500">11:00</div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 bg-[#002320] border-t border-[#01312b] flex gap-4 items-center">
+                <input type="text" id="chat-input" placeholder="Xabar matni..." class="flex-1 bg-black/30 border border-[#01312b] rounded-full py-4 px-6 focus:border-[#00ffcc] outline-none transition-all">
+                <button onclick="sendMessage()" class="bg-[#00ffcc] text-black w-14 h-14 rounded-full hover:bg-white transition flex items-center justify-center shadow-lg"><i class="fas fa-paper-plane text-xl"></i></button>
+            </div>
+        </div>
+
+        <!-- VIP Modal -->
+        <div id="vip-modal" class="fixed inset-0 modal-bg z-[100] hidden flex items-center justify-center fade-in">
+            <div class="bg-[#002320] p-10 rounded-[40px] border border-[#00ffcc]/30 text-center max-w-md shadow-[0_0_50px_rgba(0,255,204,0.15)] transform transition-transform scale-95" id="vip-box">
+                <i class="fas fa-crown text-6xl text-[#ffcc00] mb-6 animate-bounce"></i>
+                <h3 class="text-2xl font-bold mb-4">Pullik Obuna</h3>
+                <p class="text-gray-400 mb-8">Ushbu aqlli bo'limdan foydalanish uchun VIP obunani faollashtiring.</p>
+                <button onclick="closeVip()" class="w-full bg-gradient-to-r from-[#00ffcc] to-[#00b38f] hover:shadow-[0_0_20px_#00ffcc] text-[#001211] py-4 rounded-2xl font-bold mb-4 transition-all">Hoziroq sotib olish</button>
+                <button onclick="closeVip()" class="text-gray-500 text-sm hover:text-white transition">Keyinroq</button>
+            </div>
+        </div>
+
+        <!-- Catalog Modal -->
+        <div id="catalog-modal" class="fixed inset-0 bg-black/95 backdrop-blur-2xl z-[200] hidden flex-col p-10 overflow-y-auto fade-in">
+            <div class="flex justify-between items-center mb-10 max-w-6xl mx-auto w-full">
+                <div class="flex items-center space-x-6">
+                    <button onclick="backToCatalog()" id="catalog-back-btn" class="hidden bg-white/10 hover:bg-[#00ffcc] hover:text-black p-3 rounded-full transition">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </button>
+                    <h2 class="text-4xl font-extrabold" id="catalog-title">Katalog</h2>
+                </div>
+                <button onclick="closeCatalog()" class="text-4xl hover:text-red-500 transition">&times;</button>
+            </div>
+
+            <div id="catalog-main" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto w-full">
+                <!-- Dynamic via JS -->
+            </div>
+            
+            <!-- Brands -->
+            <div id="sub-catalog" class="hidden grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto w-full">
+                <!-- Dynamic via JS -->
+            </div>
+        </div>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
