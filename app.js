@@ -4,9 +4,9 @@
 
 const STORES = [
     {
-        id: 'texnomart', name: 'Texnomart', rating: 4.8,
-        brandColor: 'bg-yellow-500', brandText: 'text-black',
-        banner: 'https://images.unsplash.com/photo-1550614000-4895a10e1bfd?q=80&w=1974',
+        id: 'texnomart', name: 'Texnomart', rating: 4.9,
+        brandColor: 'bg-[#ffcc00]', brandText: 'text-black',
+        banner: 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?q=80&w=2000',
         terms: '12 oygacha 0%', docs: 'Faqat pasport', url: 'https://texnomart.uz'
     },
     {
@@ -22,35 +22,334 @@ const STORES = [
         terms: 'Muddatli to\'lov 0%', docs: 'Faqat pasport', url: 'https://idea.uz'
     },
     {
-        id: 'olcha', name: 'Olcha.uz', rating: 4.7,
+        id: 'olcha', name: 'Olcha.uz', rating: 4.8,
         brandColor: 'bg-[#00ffcc]', brandText: 'text-black',
-        banner: 'https://images.unsplash.com/photo-1556656793-062ff987b50d?auto=format&fit=crop&q=80',
+        banner: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426',
         terms: 'Onlayn buyurtma', docs: 'Yetkazib berish xizmati', url: 'https://olcha.uz'
     },
     {
-        id: 'uzum', name: 'Uzum', rating: 4.4,
+        id: 'uzum', name: 'Uzum', rating: 4.6,
         brandColor: 'bg-purple-500', brandText: 'text-white',
         banner: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80',
         terms: '6 oygacha bo\'lib to\'lash', docs: 'Pasport va selfi', url: 'https://uzum.uz'
     },
     {
-        id: 'alifshop', name: 'Alifshop', rating: 4.6,
+        id: 'alifshop', name: 'Alifshop', rating: 4.7,
         brandColor: 'bg-blue-500', brandText: 'text-white',
         banner: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80',
         terms: 'Alif nasiya 12 oy', docs: 'Faqat pasport', url: 'https://alifshop.uz'
+    },
+    {
+        id: 'ishonch', name: 'Ishonch', rating: 4.4,
+        brandColor: 'bg-blue-600', brandText: 'text-white',
+        banner: 'https://images.unsplash.com/photo-1512428559083-a4979b2b91ef?q=80&w=2070',
+        terms: 'Muddatli to\'lov 15 oy', docs: 'Faqat pasport', url: 'https://ishonch.uz'
+    },
+    {
+        id: 'elmakon', name: 'Elmakon', rating: 4.3,
+        brandColor: 'bg-pink-600', brandText: 'text-white',
+        banner: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=300',
+        terms: '12 oygacha foizsiz', docs: 'Pasport va daromad', url: 'https://elmakon.uz'
+    },
+    {
+        id: 'radius', name: 'Radius', rating: 4.5,
+        brandColor: 'bg-gray-800', brandText: 'text-white',
+        banner: 'https://images.unsplash.com/photo-1480694313141-fce5e697ee25?q=80&w=2070',
+        terms: 'Bonuslar va chegirmalar', docs: 'Barcha hujjatlar', url: 'https://radius.uz'
+    },
+    {
+        id: 'artel', name: 'Artel', rating: 4.6,
+        brandColor: 'bg-green-600', brandText: 'text-white',
+        banner: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=2070',
+        terms: 'Brend kafolati', docs: 'Texnik pasport', url: 'https://artelgroup.org'
     }
 ];
 
-let currentUser = { isVip: false };
-const favorites = new Set();
-
-// PROFIL MA'LUMOTLARI QOLIP
-const userData = {
-    firstName: "Sofya",
-    lastName: "Project Manager",
-    phone: "+998 90 123 45 67",
-    userId: "SQ-8892"
+const TRANSLATIONS = {
+    uz: {
+        navHome: "Asosiy",
+        navKatalog: "Katalog",
+        navCalc: "Kalkulyator",
+        navSmartSearch: "Aqlli qidiruv",
+        navCompare: "Solishtirish",
+        navFav: "Sevimli",
+        navProf: "Profil",
+        navFeed: "Takliflar",
+        navAdmin: "Admin",
+        pageTitleHome: "Internet Do'konlar",
+        pageTitleProfile: "Shaxsiy Kabinet",
+        pageTitleFav: "Sevimli Mahsulotlar",
+        pageTitleFeed: "Taklif va Shikoyatlar",
+        pageTitleCalc: "Kalkulyator",
+        searchPlaceholder: "Mahsulot qidirish...",
+        compTerms: "12 oygacha 0%",
+        compDocs: "Faqat pasport",
+        btnSolishtirish: "Solishtirish",
+        btnSaytga: "Saytga o'tish",
+        btnOrqaga: "Orqaga",
+        vipTitle: "Pullik Obuna",
+        vipDesc: "Ushbu aqlli bo'limdan foydalanish uchun VIP obunani faollashtiring.",
+        vipPrice: "Xizmat narxi",
+        btnBuyNow: "Hoziroq sotib olish",
+        btnSubscribe: "Obuna bo'lish",
+        btnLater: "Keyinroq",
+        supportTitle: "Yordam Markazi",
+        supportStatus: "Admin online",
+        supportWelcome: "Assalomu alaykum! Fikr va takliflaringizni yozib qoldiring.",
+        profileId: "ID Raqamingiz",
+        profileStatus: "Statusingiz",
+        statusVip: "VIP OBUNA",
+        statusBasic: "ODDIY",
+        expDate: "Tugash muddati",
+        notFavs: "Sizda sevimli mahsulotlar yo'q.",
+        noResults: "Hech narsa topilmadi...",
+        noBrandResults: "Hozircha bu brendda mahsulot yo'q.",
+        calcTitle: "Muddatli to'lov hisoblagichi",
+        calcSubtitle: "Oylik to'lovni oson darajada hisoblang",
+        calcLabelPrice: "Mahsulot narxi (UZS)",
+        calcMinError: "Minimal summa 500 000 so'm",
+        calcLabelDuration: "To'lov muddati (oy)",
+        calcMonthlyLabel: "Oylik to'lov",
+        calcPerMonth: "so'm / oyiga",
+        calcTotalLabel: "Umumiy summa",
+        calcOverLabel: "Ortiqcha to'lov",
+        calcDisclaimer: "Hisob-kitoblar onlayn do'konlarning o'rtacha ustama foizlari asosida amalga oshirildi.",
+        monthTerm: "oy"
+    },
+    ru: {
+        navHome: "Главная",
+        navKatalog: "Каталог",
+        navCalc: "Калькулятор",
+        navSmartSearch: "Умный поиск",
+        navCompare: "Сравнение",
+        navFav: "Избранное",
+        navProf: "Профиль",
+        navFeed: "Предложения",
+        navAdmin: "Админ",
+        pageTitleHome: "Интернет Магазины",
+        pageTitleProfile: "Личный Кабинет",
+        pageTitleFav: "Избранные Товары",
+        pageTitleFeed: "Предложения и Жалобы",
+        pageTitleCalc: "Калькулятор",
+        searchPlaceholder: "Поиск товаров...",
+        compTerms: "До 12 месяцев 0%",
+        compDocs: "Только паспорт",
+        btnSolishtirish: "Сравнить",
+        btnSaytga: "Перейти на сайт",
+        btnOrqaga: "Назад",
+        vipTitle: "Платная Подписка",
+        vipDesc: "Активируйте VIP подписку для доступа к этому разделу.",
+        vipPrice: "Стоимость услуги",
+        btnBuyNow: "Купить сейчас",
+        btnSubscribe: "Подписаться",
+        btnLater: "Позже",
+        supportTitle: "Центр Поддержки",
+        supportStatus: "Админ онлайн",
+        supportWelcome: "Здравствуйте! Оставьте свои отзывы и предложения.",
+        profileId: "Ваш ID",
+        profileStatus: "Ваш статус",
+        statusVip: "VIP ПОДПИСКА",
+        statusBasic: "ОБЫЧНЫЙ",
+        expDate: "Срок истечения",
+        notFavs: "У вас нет избранных товаров.",
+        noResults: "Ничего не найдено...",
+        noBrandResults: "В этом бренде пока нет товаров.",
+        calcTitle: "Калькулятор рассрочки",
+        calcSubtitle: "Рассчитайте ежемесячный платеж легко",
+        calcLabelPrice: "Цена товара (UZS)",
+        calcMinError: "Минимальная сумма 500 000 сум",
+        calcLabelDuration: "Срок оплаты (мес)",
+        calcMonthlyLabel: "Ежемесячный платеж",
+        calcPerMonth: "сум / в месяц",
+        calcTotalLabel: "Общая сумма",
+        calcOverLabel: "Переплата",
+        calcDisclaimer: "Расчеты основаны на средних наценках интернет-магазинов.",
+        monthTerm: "мес"
+    },
+    en: {
+        navHome: "Home",
+        navKatalog: "Catalog",
+        navCalc: "Calculator",
+        navSmartSearch: "Smart Search",
+        navCompare: "Compare",
+        navFav: "Favorites",
+        navProf: "Profile",
+        navFeed: "Feedback",
+        navAdmin: "Admin",
+        pageTitleHome: "Online Stores",
+        pageTitleProfile: "Personal Account",
+        pageTitleFav: "Favorite Products",
+        pageTitleFeed: "Feedback & Complaints",
+        pageTitleCalc: "Calculator",
+        searchPlaceholder: "Search products...",
+        compTerms: "Up to 12 months 0%",
+        compDocs: "Passport only",
+        btnSolishtirish: "Compare",
+        btnSaytga: "Go to site",
+        btnOrqaga: "Go back",
+        vipTitle: "Paid Subscription",
+        vipDesc: "Activate VIP subscription to use this smart section.",
+        vipPrice: "Service price",
+        btnBuyNow: "Buy now",
+        btnSubscribe: "Subscribe",
+        btnLater: "Later",
+        supportTitle: "Support Center",
+        supportStatus: "Admin online",
+        supportWelcome: "Hello! Please leave your feedback and suggestions.",
+        profileId: "Your ID",
+        profileStatus: "Your Status",
+        statusVip: "VIP SUBSCRIPTION",
+        statusBasic: "BASIC",
+        expDate: "Expiry date",
+        notFavs: "You have no favorite products.",
+        noResults: "Nothing found...",
+        noBrandResults: "No products in this brand yet.",
+        calcTitle: "Installment Calculator",
+        calcSubtitle: "Calculate your monthly payment easily",
+        calcLabelPrice: "Product Price (UZS)",
+        calcMinError: "Minimum amount 500,000 UZS",
+        calcLabelDuration: "Payment term (months)",
+        calcMonthlyLabel: "Monthly payment",
+        calcPerMonth: "UZS / per month",
+        calcTotalLabel: "Total amount",
+        calcOverLabel: "Overpayment",
+        calcDisclaimer: "Calculations are based on average markups of online stores.",
+        monthTerm: "months"
+    }
 };
+
+let currentLang = localStorage.getItem('smartqiyos_lang') || 'uz';
+
+let currentSection = 'home';
+
+function setLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('smartqiyos_lang', lang);
+    updateStaticLabels();
+    renderStores();
+    
+    // Update active state in lang bar
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('text-white', btn.id === `lang-${lang}`);
+        btn.classList.toggle('text-gray-500', btn.id !== `lang-${lang}`);
+    });
+
+    // Re-render current section parts if needed
+    if (currentSection === 'profile') renderProfile();
+    if (currentSection === 'favorites') renderFavorites();
+    
+    updatePageTitle();
+}
+
+function updateStaticLabels() {
+    const t = TRANSLATIONS[currentLang];
+    document.getElementById('navHome').innerHTML = `<i class="fas fa-home mr-4 w-6"></i> ${t.navHome}`;
+    document.getElementById('navKatalog').innerHTML = `<i class="fas fa-th-large mr-4 w-6"></i> ${t.navKatalog}`;
+    document.getElementById('navCalc').innerHTML = `<i class="fas fa-calculator mr-4 w-6"></i> ${t.navCalc}`;
+    
+    document.getElementById('navSmartSearch').innerHTML = `
+        <div class="flex-1 flex items-center">
+            <i class="fas fa-bolt mr-4 w-6"></i> ${t.navSmartSearch}
+        </div>
+        <span class="bg-yellow-500 p-1 rounded-md text-[10px] text-black"><i class="fas fa-crown"></i></span>`;
+    
+    document.getElementById('navCompare').innerHTML = `
+        <div class="flex-1 flex items-center">
+            <i class="fas fa-balance-scale mr-4 w-6"></i> ${t.navCompare}
+        </div>
+        <span class="bg-yellow-500 p-1 rounded-md text-[10px] text-black"><i class="fas fa-crown"></i></span>`;
+
+    document.getElementById('navFav').innerHTML = `<i class="fas fa-heart mr-4 w-6"></i> ${t.navFav}`;
+    document.getElementById('navProf').innerHTML = `<i class="fas fa-user mr-4 w-6"></i> ${t.navProf}`;
+    document.getElementById('navFeed').innerHTML = `<i class="fas fa-comment-dots mr-4 w-6"></i> ${t.navFeed}`;
+    
+    document.getElementById('main-search').placeholder = t.searchPlaceholder;
+
+    // Calculator Section fixed labels
+    if (document.getElementById('section-kalkulyator')) {
+        document.querySelector('#section-kalkulyator h2').textContent = t.calcTitle;
+        document.querySelector('#section-kalkulyator p.text-sm').textContent = t.calcSubtitle;
+        // Search by text content or a more stable selector
+        const labels = document.querySelectorAll('#section-kalkulyator label');
+        if (labels[0]) labels[0].textContent = t.calcLabelPrice;
+        if (labels[1]) labels[1].textContent = t.calcLabelDuration;
+        
+        document.getElementById('calc-error').textContent = t.calcMinError;
+        document.getElementById('calc-back-btn').innerHTML = `<i class="fas fa-arrow-left"></i> ${t.btnOrqaga}`;
+        
+        // Update results labels
+        document.querySelectorAll('#section-kalkulyator .uppercase').forEach(el => {
+            if (el.textContent.trim().toLowerCase().includes('oylik')) el.textContent = t.calcMonthlyLabel;
+            if (el.textContent.trim().toLowerCase().includes('umumiy')) el.textContent = t.calcTotalLabel;
+            if (el.textContent.trim().toLowerCase().includes('ortiqcha')) el.textContent = t.calcOverLabel;
+        });
+        const perMonthLabel = document.querySelector('#section-kalkulyator .text-lg.text-gray-500');
+        if (perMonthLabel) perMonthLabel.textContent = t.calcPerMonth;
+        
+        const disclaimer = document.querySelector('#section-kalkulyator .mt-10.p-4');
+        if (disclaimer) disclaimer.innerHTML = `<i class="fas fa-info-circle mr-2 text-[#00ffcc]"></i> ${t.calcDisclaimer}`;
+        
+        // Update Chips Labels
+        const durationChips = document.getElementById('calc-durations').children;
+        for (let chip of durationChips) {
+            const months = chip.getAttribute('onclick').match(/\d+/)[0];
+            chip.textContent = `${months} ${t.monthTerm}`;
+        }
+    }
+}
+
+function updatePageTitle() {
+    const t = TRANSLATIONS[currentLang];
+    const titles = {
+        home: t.pageTitleHome,
+        profile: t.pageTitleProfile,
+        favorites: t.pageTitleFav,
+        feedback: t.pageTitleFeed,
+        kalkulyator: t.pageTitleCalc
+    };
+    if (titles[currentSection]) {
+        document.getElementById('page-title').textContent = titles[currentSection];
+        // Also update inner headings if they exist
+        const profileInner = document.getElementById('profile-page-title');
+        if (profileInner) profileInner.textContent = t.pageTitleProfile;
+    }
+}
+
+function handleAdmin() {
+    const t = TRANSLATIONS[currentLang];
+    const pass = prompt(currentLang === 'uz' ? "Admin parolini kiriting:" : (currentLang === 'ru' ? "Введите пароль админа:" : "Enter admin password:"));
+    if (pass === "admin123") {
+        alert("Success!");
+    } else {
+        alert("Access Denied!");
+    }
+}
+
+let currentUser = { 
+    isVip: localStorage.getItem('smartqiyos_vip') === 'true',
+    userId: localStorage.getItem('smartqiyos_uid') || generateUserId(),
+    subEnd: localStorage.getItem('smartqiyos_sub_end') || null
+};
+
+function generateUserId() {
+    const id = "SQ-" + Math.floor(1000 + Math.random() * 9000);
+    localStorage.setItem('smartqiyos_uid', id);
+    return id;
+}
+
+function checkVipStatus() {
+    if (currentUser.subEnd) {
+        const now = new Date();
+        const end = new Date(currentUser.subEnd);
+        if (now > end) {
+            currentUser.isVip = false;
+            localStorage.setItem('smartqiyos_vip', 'false');
+        }
+    }
+    return currentUser.isVip;
+}
+
+const favorites = new Set();
 
 const CATEGORIES = [
     { id: 'phones', name: 'Telefonlar va gadjetlar', icon: 'fas fa-mobile-alt', count: '4+', color: 'from-purple-500 to-pink-600', img: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=300', brands: ['Samsung', 'Apple', 'Xiaomi', 'Oppo'] },
@@ -78,6 +377,7 @@ const PRODUCTS = [
 
 // 1. Render Stores
 function renderStores() {
+    const t = TRANSLATIONS[currentLang];
     const grid = document.getElementById('section-home');
     grid.innerHTML = STORES.map(s => `
         <div class="card-shop overflow-hidden">
@@ -90,17 +390,110 @@ function renderStores() {
                 <p class="text-xs text-gray-400 mb-2"><i class="far fa-clock mr-2"></i> ${s.terms}</p>
                 <p class="text-xs text-gray-400 mb-6"><i class="far fa-file-alt mr-2"></i> ${s.docs}</p>
                 <div class="flex space-x-2">
-                    <button onclick="checkVip('compare')" class="flex-1 ${s.brandColor} ${s.brandText} py-2 rounded-xl font-bold text-sm transition filter hover:brightness-110">Solishtirish</button>
-                    <button onclick="window.open('${s.url}')" class="flex-1 border border-gray-600 hover:border-gray-400 py-2 rounded-xl text-sm transition">Saytga o'tish</button>
+                    <button onclick="checkVip('compare')" class="flex-1 ${s.brandColor} ${s.brandText} py-2 rounded-xl font-bold text-sm transition filter hover:brightness-110">${t.btnSolishtirish}</button>
+                    <button onclick="window.open('${s.url}')" class="flex-1 border border-gray-600 hover:border-gray-400 py-2 rounded-xl text-sm transition">${t.btnSaytga}</button>
                 </div>
             </div>
         </div>
     `).join('');
 }
 
-// 2. Navigation
+
+// ============================================================
+// 6. Installment Calculator Logic
+// ============================================================
+
+const CALCULATOR_RATES = {
+    3: 0.12,
+    6: 0.22,
+    9: 0.30,
+    12: 0.40,
+    18: 0.52,
+    24: 0.65
+};
+
+let currentCalcDuration = 12;
+let currentCalcAmount = 0;
+
+function handleCalcInput(el) {
+    let val = el.value.replace(/\D/g, ''); // Remove non-digits
+    
+    if (val === "") {
+        currentCalcAmount = 0;
+        el.value = "";
+    } else {
+        currentCalcAmount = parseInt(val);
+        // Format with spaces
+        el.value = currentCalcAmount.toLocaleString('uz-UZ').replace(/,/g, ' ');
+    }
+    
+    // Validation
+    const errorEl = document.getElementById('calc-error');
+    if (currentCalcAmount > 0 && currentCalcAmount < 500000) {
+        errorEl.classList.remove('hidden');
+    } else {
+        errorEl.classList.add('hidden');
+    }
+    
+    calculateInstallments();
+}
+
+function updateCalcDuration(months) {
+    currentCalcDuration = months;
+    
+    // UI Update for chips
+    document.querySelectorAll('.calc-chip').forEach(btn => {
+        btn.classList.remove('active-glow');
+        if (btn.innerText.includes(months + " oy")) {
+            btn.classList.add('active-glow');
+        }
+    });
+    
+    calculateInstallments();
+}
+
+function calculateInstallments() {
+    if (currentCalcAmount < 500000) {
+        updateCalcDisplay(0, 0, 0);
+        return;
+    }
+    
+    const markup = CALCULATOR_RATES[currentCalcDuration] || 0.40;
+    const totalAmount = currentCalcAmount + (currentCalcAmount * markup);
+    const monthlyPayment = totalAmount / currentCalcDuration;
+    const overpayment = totalAmount - currentCalcAmount;
+    
+    updateCalcDisplay(monthlyPayment, totalAmount, overpayment);
+}
+
+function updateCalcDisplay(monthly, total, over) {
+    animateValue('res-monthly', monthly);
+    document.getElementById('res-total').textContent = Math.round(total).toLocaleString('uz-UZ').replace(/,/g, ' ') + " so'm";
+    document.getElementById('res-over').textContent = "+" + Math.round(over).toLocaleString('uz-UZ').replace(/,/g, ' ') + " so'm";
+}
+
+function animateValue(id, end) {
+    const el = document.getElementById(id);
+    const start = parseInt(el.innerText.replace(/\s/g, '')) || 0;
+    const duration = 500;
+    let startTime = null;
+
+    function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+        const current = Math.floor(progress * (end - start) + start);
+        el.innerText = current.toLocaleString('uz-UZ').replace(/,/g, ' ');
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        }
+    }
+    window.requestAnimationFrame(step);
+}
+
+// 2. Navigation (UPDATED)
 function showSection(section, btnId) {
-    const sections = ['section-home', 'section-products', 'section-profile', 'section-favorites', 'section-feedback'];
+    currentSection = section;
+    const sections = ['section-home', 'section-products', 'section-profile', 'section-favorites', 'section-feedback', 'section-kalkulyator'];
     sections.forEach(s => {
         const el = document.getElementById(s);
         if(el) el.classList.add('hidden');
@@ -112,20 +505,12 @@ function showSection(section, btnId) {
         document.getElementById(btnId).classList.add('active-glow');
     }
     
-    if (section === 'home') {
-        document.getElementById('section-home').classList.remove('hidden');
-        document.getElementById('page-title').textContent = "Internet Do'konlar";
-    } else if (section === 'profile') {
-        document.getElementById('section-profile').classList.remove('hidden');
-        document.getElementById('page-title').textContent = "Shaxsiy Kabinet";
-        renderProfile();
-    } else if (section === 'favorites') {
-        document.getElementById('section-favorites').classList.remove('hidden');
-        document.getElementById('page-title').textContent = "Sevimli Mahsulotlar";
-        renderFavorites();
-    } else if (section === 'feedback') {
-        document.getElementById('section-feedback').classList.remove('hidden');
-        document.getElementById('page-title').textContent = "Taklif va Shikoyatlar";
+    const targetSectionId = `section-${section}`;
+    if (document.getElementById(targetSectionId)) {
+        document.getElementById(targetSectionId).classList.remove('hidden');
+        updatePageTitle();
+        if (section === 'profile') renderProfile();
+        if (section === 'favorites') renderFavorites();
     }
 }
 
@@ -212,22 +597,30 @@ function renderFavorites() {
 }
 
 function renderProfile() {
+    const t = TRANSLATIONS[currentLang];
     const container = document.getElementById('profile-container');
+    if (!container) return;
+    const isVip = checkVipStatus();
+    
     container.innerHTML = `
-        <div class="bg-[#002320] rounded-[32px] p-10 border border-[#01312b] shadow-xl w-full max-w-3xl mx-auto items-center flex flex-col sm:flex-row gap-8">
-            <div class="bg-gradient-to-tr from-[#00ffcc] to-teal-800 w-32 h-32 rounded-full flex items-center justify-center text-5xl font-bold text-black border-4 border-black shadow-[0_0_20px_rgba(0,255,204,0.4)]">
-                ${userData.firstName[0]}${userData.lastName[0]}
+        <div class="bg-[#002320] rounded-[32px] p-10 border border-[#01312b] shadow-xl w-full max-w-3xl mx-auto flex flex-col sm:flex-row items-center gap-8 fade-in">
+            <div class="bg-gradient-to-tr from-[#00ffcc] to-teal-800 w-32 h-32 rounded-full flex items-center justify-center text-5xl font-extrabold text-black border-4 border-black/20 shadow-[0_0_30px_rgba(0,255,204,0.3)]">
+                SQ
             </div>
-            <div class="flex-1">
-                <div class="flex items-center gap-3 mb-2">
-                    <h3 class="text-3xl font-extrabold">${userData.firstName} ${userData.lastName}</h3>
-                    ${currentUser.isVip ? '<span class="bg-yellow-500 text-black text-xs font-bold px-3 py-1 rounded-full"><i class="fas fa-crown"></i> VIP</span>' : '<span class="bg-gray-700 text-white text-xs font-bold px-3 py-1 rounded-full">ODDIY</span>'}
+            <div class="flex-1 text-center sm:text-left">
+                <div class="flex flex-col sm:flex-row items-center gap-3 mb-4">
+                    <h3 class="text-3xl font-black text-white">Smart User</h3>
+                    ${isVip ? `<span class="bg-yellow-500 text-black text-[10px] font-black px-4 py-1.5 rounded-full shadow-lg"><i class="fas fa-crown"></i> ${t.statusVip}</span>` : `<span class="bg-gray-700 text-white text-[10px] font-black px-4 py-1.5 rounded-full">${t.statusBasic}</span>`}
                 </div>
-                <p class="text-gray-400 text-lg mb-4"><i class="fas fa-phone text-[#00ffcc] mr-2"></i> ${userData.phone}</p>
-                <div class="bg-black/40 rounded-xl p-4 flex justify-between items-center border border-white/5">
-                    <div>
-                        <p class="text-xs text-gray-500 mb-1">ID Raqamingiz</p>
-                        <p class="font-mono text-[#00ffcc] text-xl font-bold">${userData.userId}</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-black/40 rounded-2xl p-5 border border-white/5 transition hover:border-[#00ffcc]/30">
+                        <p class="text-[10px] text-gray-500 uppercase font-black mb-1">${t.profileId}</p>
+                        <p class="font-mono text-[#00ffcc] text-xl font-black tracking-wider">${currentUser.userId}</p>
+                    </div>
+                    <div class="bg-black/40 rounded-2xl p-5 border border-white/5 transition hover:border-[#00ffcc]/30">
+                        <p class="text-[10px] text-gray-500 uppercase font-black mb-1">${t.expDate}</p>
+                        <p class="text-white text-xl font-bold">${currentUser.subEnd || '---'}</p>
                     </div>
                 </div>
             </div>
@@ -256,22 +649,44 @@ function sendMessage() {
 // OBUNA YO'NALTIRISH FUNKSIYASI
 function handleVipSubscription() {
     const telegramBot = "https://t.me/saydjamolG4S";
-    const message = `Assalomu alaykum! Men SmartQiyos VIP obunasini (3,999 so'm) sotib olmoqchiman. ID: ${userData.userId}`;
-    window.location.href = `${telegramBot}?text=${encodeURIComponent(message)}`;
+    const t = TRANSLATIONS[currentLang];
+    const message = `Assalomu alaykum, ID: ${currentUser.userId} uchun obuna sotib olmoqchiman.`;
+    window.open(`${telegramBot}?text=${encodeURIComponent(message)}`, '_blank');
+}
+
+// TEST: Activate VIP (for demo purposes)
+function activateVipDemo() {
+    const end = new Date();
+    end.setDate(end.getDate() + 15);
+    currentUser.isVip = true;
+    currentUser.subEnd = end.toISOString().split('T')[0];
+    localStorage.setItem('smartqiyos_vip', 'true');
+    localStorage.setItem('smartqiyos_sub_end', currentUser.subEnd);
+    alert("VIP faollashtirildi (Demo)");
+    renderProfile();
 }
 
 // 4. VIP Modules
 function checkVip(action) {
-    if (!currentUser.isVip) {
+    if (!checkVipStatus()) {
+        const t = TRANSLATIONS[currentLang];
+        document.getElementById('vip-title-text').textContent = t.vipTitle;
+        document.getElementById('vip-desc-text').textContent = t.vipDesc;
+        document.getElementById('vip-price-label').textContent = t.vipPrice;
+        document.getElementById('vip-buy-btn').innerHTML = `<i class="fab fa-telegram-plane mr-2"></i> ${t.btnBuyNow}`;
+        
         document.getElementById('vip-modal').classList.remove('hidden');
         document.getElementById('vip-modal').classList.add('flex');
         
-        // Add pop animation
         const box = document.getElementById('vip-box');
         box.classList.remove('scale-95');
         box.classList.add('scale-100');
     } else {
-        alert("VIP tizimiga xush kelibsiz!");
+        if (action === 'compare') {
+            alert("Solishtirish bo'limiga o'tildi (VIP)");
+        } else if (action === 'vip-search') {
+            alert("Aqlli qidiruv bo'limiga o'tildi (VIP)");
+        }
     }
 }
 
@@ -347,5 +762,6 @@ function backToCatalog() {
 
 // INIT
 document.addEventListener('DOMContentLoaded', () => {
-    renderStores();
+    setLanguage(currentLang);
+    checkVipStatus();
 });

@@ -94,3 +94,30 @@
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #01312b; border-radius: 10px; }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #00ffcc; }
+
+/* 🧮 CALCULATOR STYLES */
+.calc-chip {
+    cursor: pointer;
+    text-align: center;
+    color: #6b7280;
+    white-space: nowrap;
+}
+
+.calc-chip.active-glow {
+    border-color: #00ffcc;
+    color: #00ffcc !important;
+    background: rgba(0, 255, 204, 0.1);
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+}
+
+#calc-amount::placeholder {
+    color: rgba(255, 255, 255, 0.05);
+}
+
+#res-monthly {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.counter-anim {
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}

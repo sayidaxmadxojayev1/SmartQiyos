@@ -21,35 +21,48 @@
         <h1 class="text-2xl font-bold text-[#00ffcc] mb-10">Smart<span class="text-white">Qiyos</span></h1>
         
         <nav class="flex-1 space-y-2 mt-4">
-            <button onclick="showSection('home', 'navHome')" id="navHome" class="sidebar-btn active-glow w-full flex items-center p-4 rounded-xl text-gray-400 hover:text-white transition">
-                <i class="fas fa-home mr-4 w-6"></i> Asosiy
-            </button>
-            <button onclick="openCatalog()" id="navKatalog" class="sidebar-btn w-full flex items-center p-4 rounded-xl text-gray-400 hover:text-white transition">
-                <i class="fas fa-th-large mr-4 w-6"></i> Katalog
-            </button>
-            <button onclick="showSection('kalkulyator', 'navCalc')" id="navCalc" class="sidebar-btn w-full flex items-center p-4 rounded-xl text-gray-400 hover:text-white transition">
-                <i class="fas fa-calculator mr-4 w-6"></i> Kalkulyator
-            </button>
-            <button onclick="checkVip('vip-search')" class="sidebar-btn w-full flex items-center p-4 rounded-xl text-gray-400 hover:text-white transition">
-                <i class="fas fa-bolt mr-4 w-6"></i> Aqlli qidiruv <span class="vip-badge" style="margin-left:auto">👑</span>
-            </button>
-            <button onclick="checkVip('compare')" class="sidebar-btn w-full flex items-center p-4 rounded-xl text-gray-400 hover:text-white transition">
-                <i class="fas fa-balance-scale mr-4 w-6"></i> Solishtirish <span class="vip-badge" style="margin-left:auto">👑</span>
-            </button>
-            <button onclick="showSection('favorites', 'navFav')" id="navFav" class="sidebar-btn w-full flex items-center p-4 rounded-xl text-gray-400 hover:text-white transition mt-6">
-                <i class="fas fa-heart mr-4 w-6"></i> Sevimli
-            </button>
-            <button onclick="showSection('profile', 'navProf')" id="navProf" class="sidebar-btn w-full flex items-center p-4 rounded-xl text-gray-400 hover:text-white transition">
-                <i class="fas fa-user mr-4 w-6"></i> Profil
-            </button>
-            <button onclick="showSection('feedback', 'navFeed')" id="navFeed" class="sidebar-btn w-full flex items-center p-4 rounded-xl text-gray-400 hover:text-white transition">
-                <i class="fas fa-comment-dots mr-4 w-6"></i> Takliflar
-            </button>
-        </nav>
+                <button onclick="showSection('home', 'navHome')" id="navHome" class="sidebar-btn w-full flex items-center px-6 py-4 rounded-2xl transition-all duration-300 text-gray-400 hover:text-[#00ffcc] active-glow">
+                    <i class="fas fa-home mr-4 w-6"></i> Asosiy
+                </button>
+                <button onclick="openCatalog()" id="navKatalog" class="sidebar-btn w-full flex items-center px-6 py-4 rounded-2xl transition-all duration-300 text-gray-400 hover:text-[#00ffcc]">
+                    <i class="fas fa-th-large mr-4 w-6"></i> Katalog
+                </button>
+                <button onclick="showSection('kalkulyator', 'navCalc')" id="navCalc" class="sidebar-btn w-full flex items-center px-6 py-4 rounded-2xl transition-all duration-300 text-gray-400 hover:text-[#00ffcc]">
+                    <i class="fas fa-calculator mr-4 w-6"></i> Kalkulyator
+                </button>
+                <button onclick="checkVip('vip-search')" id="navSmartSearch" class="sidebar-btn w-full flex items-center px-6 py-4 rounded-2xl transition-all duration-300 text-gray-400 hover:text-[#00ffcc]">
+                    <div class="flex-1 flex items-center">
+                        <i class="fas fa-bolt mr-4 w-6"></i> Aqlli qidiruv
+                    </div>
+                    <span class="bg-yellow-500 p-1 rounded-md text-[10px] text-black">
+                        <i class="fas fa-crown"></i>
+                    </span>
+                </button>
+                <button onclick="checkVip('compare')" id="navCompare" class="sidebar-btn w-full flex items-center px-6 py-4 rounded-2xl transition-all duration-300 text-gray-400 hover:text-[#00ffcc]">
+                    <div class="flex-1 flex items-center">
+                        <i class="fas fa-balance-scale mr-4 w-6"></i> Solishtirish
+                    </div>
+                    <span class="bg-yellow-500 p-1 rounded-md text-[10px] text-black">
+                        <i class="fas fa-crown"></i>
+                    </span>
+                </button>
+                <button id="navFav" onclick="showSection('favorites', 'navFav')" class="sidebar-btn w-full flex items-center px-6 py-4 rounded-2xl transition-all duration-300 text-gray-400 hover:text-[#00ffcc]">
+                    <i class="fas fa-heart mr-4 w-6"></i> Sevimli
+                </button>
+                <button id="navProf" onclick="showSection('profile', 'navProf')" class="sidebar-btn w-full flex items-center px-6 py-4 rounded-2xl transition-all duration-300 text-gray-400 hover:text-[#00ffcc]">
+                    <i class="fas fa-user mr-4 w-6"></i> Profil
+                </button>
+                <button id="navFeed" onclick="showSection('feedback', 'navFeed')" class="sidebar-btn w-full flex items-center px-6 py-4 rounded-2xl transition-all duration-300 text-gray-400 hover:text-[#00ffcc]">
+                    <i class="fas fa-comment-dots mr-4 w-6"></i> Takliflar
+                </button>
+            </nav>
 
-        <button class="mt-auto bg-[#2e3477] text-[#a0a5f5] p-5 rounded-2xl flex items-center justify-center font-bold hover:bg-[#39408b] transition w-full mt-10">
-            <i class="fas fa-shield-alt mr-3"></i> Admin
-        </button>
+            <div class="mt-auto space-y-3">
+                <p class="text-[10px] text-gray-500 text-center mb-2">© SmartQiyos 2026</p>
+                <button onclick="handleAdmin()" class="w-full bg-[#01312b] hover:bg-[#00ffcc] hover:text-[#001211] text-[#00ffcc] py-4 rounded-2xl font-black text-xs transition-all duration-300 flex items-center justify-center gap-3 group">
+                    <i class="fas fa-shield-alt text-lg group-hover:rotate-12 transition-transform"></i> Admin
+                </button>
+            </div>
     </aside>
 
     <!-- Main View -->
@@ -62,8 +75,14 @@
                     <input type="text" id="main-search" oninput="handleSearch()" placeholder="Mahsulot qidirish..." class="bg-[#002320] border border-[#01312b] rounded-full py-2 px-10 focus:border-[#00ffcc] outline-none transition-all w-80 shadow-lg placeholder-gray-500">
                     <i class="fas fa-search absolute left-4 top-3 text-gray-500"></i>
                 </div>
-                <div class="text-sm font-bold bg-[#002320] rounded-full px-4 py-2 border border-[#01312b]">
-                    <span class="text-[#00ffcc] cursor-pointer">UZ</span> | <span class="text-gray-500 cursor-pointer hover:text-white transition">RU</span>
+                <div class="flex items-center gap-4">
+                    <div id="lang-bar" class="flex items-center gap-2 text-xs font-bold bg-black/30 px-3 py-1.5 rounded-full border border-white/5">
+                        <button id="lang-uz" onclick="setLanguage('uz')" class="lang-btn text-white transition-colors">UZ</button>
+                        <span class="text-white/10">|</span>
+                        <button id="lang-ru" onclick="setLanguage('ru')" class="lang-btn text-gray-500 transition-colors">RU</button>
+                        <span class="text-white/10">|</span>
+                        <button id="lang-en" onclick="setLanguage('en')" class="lang-btn text-gray-500 transition-colors">EN</button>
+                    </div>
                 </div>
             </div>
         </header>
@@ -81,9 +100,10 @@
             </div>
         </div>
 
-        <!-- Profile View -->
-        <div id="section-profile" class="hidden fade-in py-10" id="profile-container">
-            <!-- Dynamic via JS -->
+        <!-- Profile section -->
+        <div id="section-profile" class="hidden fade-in px-8">
+            <h2 id="profile-page-title" class="text-3xl font-black mb-8">Shaxsiy Kabinet</h2>
+            <div id="profile-container" class="grid grid-cols-1 gap-8 w-full"></div>
         </div>
 
         <!-- Favorites View -->
@@ -116,14 +136,91 @@
             </div>
         </div>
 
+        <!-- Calculator View -->
+        <div id="section-kalkulyator" class="hidden fade-in max-w-2xl mx-auto py-10">
+            <div class="glass-sidebar rounded-[32px] p-8 border border-[#01312b] shadow-2xl relative">
+                <button id="calc-back-btn" onclick="resetHome()" class="absolute top-8 left-8 text-[#00ffcc] hover:text-white transition text-sm flex items-center gap-2 font-bold">
+                    <i class="fas fa-arrow-left"></i> Orqaga
+                </button>
+                
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl font-bold">Muddatli to'lov hisoblagichi</h2>
+                    <p class="text-sm text-gray-500 mt-1">Oylik to'lovni oson darajada hisoblang</p>
+                </div>
+
+                <!-- Input Field -->
+                <div class="mb-8">
+                    <label class="block text-xs uppercase tracking-widest text-[#00ffcc] font-bold mb-3">Mahsulot narxi (UZS)</label>
+                    <div class="relative">
+                        <input type="text" id="calc-amount" placeholder="500 000" 
+                               oninput="handleCalcInput(this)" 
+                               inputmode="numeric"
+                               class="w-full bg-black/40 border-2 border-[#01312b] rounded-2xl py-6 px-8 text-3xl font-black text-white focus:border-[#00ffcc] outline-none transition-all placeholder-gray-800">
+                        <div id="calc-error" class="text-red-500 text-xs mt-2 font-bold hidden">Minimal summa 500 000 so'm</div>
+                    </div>
+                </div>
+
+                <!-- Durations -->
+                <div class="mb-10">
+                    <label class="block text-xs uppercase tracking-widest text-gray-500 font-bold mb-4">To'lov muddati (oy)</label>
+                    <div class="grid grid-cols-3 sm:grid-cols-6 gap-3" id="calc-durations">
+                        <button onclick="updateCalcDuration(3)" class="calc-chip py-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition font-bold text-sm">3 oy</button>
+                        <button onclick="updateCalcDuration(6)" class="calc-chip py-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition font-bold text-sm">6 oy</button>
+                        <button onclick="updateCalcDuration(9)" class="calc-chip py-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition font-bold text-sm">9 oy</button>
+                        <button onclick="updateCalcDuration(12)" class="calc-chip py-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition font-bold text-sm active-glow">12 oy</button>
+                        <button onclick="updateCalcDuration(18)" class="calc-chip py-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition font-bold text-sm">18 oy</button>
+                        <button onclick="updateCalcDuration(24)" class="calc-chip py-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition font-bold text-sm">24 oy</button>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="space-y-4">
+                    <div class="bg-gradient-to-br from-[#00ffcc]/10 to-transparent p-6 rounded-3xl border border-[#00ffcc]/20">
+                        <p class="text-xs text-[#00ffcc] font-bold uppercase mb-1">Oylik to'lov</p>
+                        <div class="flex items-baseline gap-2">
+                            <span id="res-monthly" class="text-4xl font-black text-white">0</span>
+                            <span class="text-lg text-gray-500 font-bold">so'm / oyiga</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-black/30 p-5 rounded-[24px] border border-white/5">
+                            <p class="text-[10px] text-gray-500 font-bold uppercase mb-1">Umumiy summa</p>
+                            <p id="res-total" class="text-lg font-bold text-white">0 so'm</p>
+                        </div>
+                        <div class="bg-black/30 p-5 rounded-[24px] border border-white/5">
+                            <p class="text-[10px] text-gray-500 font-bold uppercase mb-1">Ortiqcha to'lov</p>
+                            <p id="res-over" class="text-lg font-bold text-red-400">0 so'm</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-10 p-4 rounded-2xl bg-[#00ffcc]/5 border border-[#00ffcc]/10 text-[10px] text-gray-500 leading-relaxed">
+                    <i class="fas fa-info-circle mr-2 text-[#00ffcc]"></i> 
+                    Hisob-kitoblar onlayn do'konlarning o'rtacha ustama foizlari asosida amalga oshirildi. Haqiqiy narx do'konlar saytida farq qilishi mumkin.
+                </div>
+            </div>
+        </div>
+
         <!-- VIP Modal -->
         <div id="vip-modal" class="fixed inset-0 modal-bg z-[100] hidden flex items-center justify-center fade-in">
             <div class="bg-[#002320] p-10 rounded-[40px] border border-[#00ffcc]/30 text-center max-w-md shadow-[0_0_50px_rgba(0,255,204,0.15)] transform transition-transform scale-95" id="vip-box">
-                <i class="fas fa-crown text-6xl text-[#ffcc00] mb-6 animate-bounce"></i>
-                <h3 class="text-2xl font-bold mb-4">Pullik Obuna</h3>
-                <p class="text-gray-400 mb-8">Ushbu aqlli bo'limdan foydalanish uchun VIP obunani faollashtiring.</p>
-                <button onclick="closeVip()" class="w-full bg-gradient-to-r from-[#00ffcc] to-[#00b38f] hover:shadow-[0_0_20px_#00ffcc] text-[#001211] py-4 rounded-2xl font-bold mb-4 transition-all">Hoziroq sotib olish</button>
-                <button onclick="closeVip()" class="text-gray-500 text-sm hover:text-white transition">Keyinroq</button>
+                <i class="fas fa-crown text-6xl text-yellow-500 mb-6 block"></i>
+                <h2 id="vip-title-text" class="text-3xl font-black mb-4">Pullik Obuna</h2>
+                <p id="vip-desc-text" class="text-gray-400 mb-8 px-4">Ushbu aqlli bo'limdan foydalanish uchun VIP obunani faollashtiring.</p>
+                
+                <div class="bg-black/30 rounded-3xl p-6 mb-8 border border-white/5">
+                    <p id="vip-price-label" class="text-xs text-gray-500 uppercase font-bold mb-1">Xizmat narxi</p>
+                    <p class="text-4xl font-black text-[#00ffcc]">3,999 so'm</p>
+                    <p class="text-[10px] text-gray-600 mt-2">15 kunlik premium muddat</p>
+                </div>
+
+                <div class="flex flex-col gap-3">
+                    <button id="vip-buy-btn" onclick="handleVipSubscription()" class="w-full bg-gradient-to-r from-[#00ffcc] to-[#3b82f6] text-[#001211] py-5 rounded-[24px] font-black text-lg transition-all hover:shadow-[0_0_25px_rgba(0,255,204,0.4)]">
+                        <i class="fab fa-telegram-plane mr-2"></i> Hoziroq sotib olish
+                    </button>
+                    <button id="vip-later-btn" onclick="closeVip()" class="w-full py-4 text-gray-500 hover:text-white font-bold transition text-sm">Keyinroq</button>
+                </div>
             </div>
         </div>
 
