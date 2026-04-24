@@ -17,6 +17,14 @@
     font-weight: 700;
 }
 
+.transition-with-glow {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.transition-with-glow:hover {
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
+    transform: scale(1.02);
+}
+
 .card-shop { 
     background: rgba(0, 35, 32, 0.8); 
     backdrop-filter: blur(10px);
@@ -31,10 +39,47 @@
 }
 
 /* 🌀 ANTIGRAVITY EFFECT */
-.tech-bg { 
-    position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 0; 
-    background: url('https://images.unsplash.com/photo-1550009158-9ebf69173e03?q=80&w=2001') center/cover;
-    filter: blur(80px) opacity(0.08); 
+.tech-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: url('tech-bg.png') center/cover;
+    opacity: 0.15;
+    z-index: 0;
+    pointer-events: none;
+    transition: transform 0.1s ease-out;
+}
+
+.blueprint-bg {
+    background-image: 
+        linear-gradient(rgba(0, 255, 204, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 204, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+}
+
+.microchip-bg {
+    background-image: 
+        radial-gradient(circle at 2px 2px, rgba(0, 255, 204, 0.1) 1px, transparent 0);
+    background-size: 20px 20px;
+}
+
+/* Pulsing Glow Points */
+.tech-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 20% 30%, #00ffcc 1px, transparent 1px),
+                      radial-gradient(circle at 70% 50%, #00ffcc 1px, transparent 1px),
+                      radial-gradient(circle at 40% 80%, #00ffcc 1px, transparent 1px),
+                      radial-gradient(circle at 80% 20%, #00ffcc 1px, transparent 1px);
+    background-size: 200px 200px;
+    opacity: 0.3;
+    animation: neonPulse 4s infinite alternate;
+}
+
+@keyframes neonPulse {
+    0% { opacity: 0.1; filter: drop-shadow(0 0 2px #00ffcc); }
+    100% { opacity: 0.5; filter: drop-shadow(0 0 10px #00ffcc); }
 }
 
 .glow-orb {
@@ -49,13 +94,10 @@
 
 /* Fon dizayni uchun */
 .bg-tech {
-    background-color: #001a18;
-    background-image: linear-gradient(rgba(0, 26, 24, 0.95), rgba(0, 26, 24, 0.98)), 
-                      url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80');
-    background-size: cover;
-    background-position: center;
+    background-color: #001211;
+    background-image: radial-gradient(circle at top right, rgba(0, 255, 204, 0.05), transparent),
+                      linear-gradient(180deg, #001211 0%, #001a18 100%);
     background-attachment: fixed;
-    animation: backgroundMove 60s linear infinite; /* Suzib yurish effekti */
 }
 
 @keyframes backgroundMove {
@@ -103,11 +145,59 @@
     white-space: nowrap;
 }
 
-.calc-chip.active-glow {
-    border-color: #00ffcc;
-    color: #00ffcc !important;
+@keyframes activeGlow {
+    0% { box-shadow: 0 0 5px rgba(0, 255, 204, 0.2); }
+    50% { box-shadow: 0 0 20px rgba(0, 255, 204, 0.5); }
+    100% { box-shadow: 0 0 5px rgba(0, 255, 204, 0.2); }
+}
+
+.active-admin-glow {
     background: rgba(0, 255, 204, 0.1);
+    color: #00ffcc !important;
+    border: 1px solid rgba(0, 255, 204, 0.3);
     box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+}
+
+.admin-glass-row {
+    transition: all 0.3s ease;
+}
+
+.admin-glass-row:hover {
+    background: rgba(0, 255, 204, 0.05);
+    transform: translateX(10px);
+    box-shadow: inset 2px 0 0 #00ffcc;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.status-vip {
+    background: rgba(234, 179, 8, 0.1);
+    color: #eab308;
+    border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
+.status-basic {
+    background: rgba(255, 255, 255, 0.05);
+    color: #6b7280;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-btn-vip {
+    background: linear-gradient(to right, #00ffcc, #3b82f6);
+    color: #001211;
+    box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
+}
+
+.admin-btn-vip:hover {
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.6);
+    transform: translateY(-2px);
 }
 
 #calc-amount::placeholder {
@@ -121,3 +211,63 @@
 .counter-anim {
     transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
+
+/* 👤 ADMIN PANEL STYLES */
+#admin-user-table tr {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(1, 49, 43, 0.3);
+}
+
+#admin-user-table tr:hover {
+    background: rgba(0, 255, 204, 0.03);
+    box-shadow: inset 0 0 20px rgba(0, 255, 204, 0.05);
+}
+
+.admin-btn-vip {
+    background: rgba(255, 204, 0, 0.1);
+    color: #ffcc00;
+    border: 1px solid rgba(255, 204, 0, 0.3);
+}
+
+.admin-btn-vip:hover {
+    background: #ffcc00;
+    color: black;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.status-vip {
+    background: rgba(255, 204, 0, 0.2);
+    color: #ffcc00;
+    border: 1px solid rgba(255, 204, 0, 0.4);
+    box-shadow: 0 0 10px rgba(255, 204, 0, 0.1);
+}
+
+.status-basic {
+    background: rgba(255, 255, 255, 0.1);
+    color: #9ca3af;
+}
+
+.admin-search-glow:focus {
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+    border-color: #00ffcc;
+}
+
+/* Sidebar Admin Button Specifics */
+#navAdmin {
+    margin-top: 10px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#navAdmin:hover {
+    background: rgba(0, 255, 204, 0.1);
+    box-shadow: -10px 0 25px rgba(0, 255, 204, 0.2);
+    transform: translateX(5px);
+}
+

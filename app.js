@@ -65,6 +65,17 @@ const STORES = [
     }
 ];
 
+const MOCK_PAYMENTS = [
+    { id: "PAY-101", user: "SQ-2099", amount: "3,999 UZS", date: "2026-04-20 14:30", status: "Tasdiqlandi" },
+    { id: "PAY-102", user: "SQ-7777", amount: "3,999 UZS", date: "2026-04-21 09:15", status: "Tasdiqlandi" },
+    { id: "PAY-103", user: "SQ-3001", amount: "3,999 UZS", date: "2026-04-24 10:00", status: "Kutish jarayonida" }
+];
+
+const ADMIN_PASS = "admin123";
+let adminLogged = localStorage.getItem('smartqiyos_admin_logged') === 'true';
+let loginAttempts = parseInt(localStorage.getItem('smartqiyos_login_attempts') || '0');
+let blockUntil = parseInt(localStorage.getItem('smartqiyos_block_until') || '0');
+
 const TRANSLATIONS = {
     uz: {
         navHome: "Asosiy",
@@ -315,21 +326,122 @@ function updatePageTitle() {
     }
 }
 
-function handleAdmin() {
-    const t = TRANSLATIONS[currentLang];
-    const pass = prompt(currentLang === 'uz' ? "Admin parolini kiriting:" : (currentLang === 'ru' ? "Введите пароль админа:" : "Enter admin password:"));
-    if (pass === "admin123") {
-        alert("Success!");
-    } else {
-        alert("Access Denied!");
+function handleAdminLogin() {
+    if (adminLogged && currentSection !== 'admin') {
+        showSection('admin', 'navAdmin');
+        showAdminSubSection('dashboard');
+        return;
     }
+
+    const now = Date.now();
+    if (now < blockUntil) {
+        const remaining = Math.ceil((blockUntil - now) / 60000);
+        alert(`Tizim bloklangan! Iltimos ${remaining} daqiqadan so'ng urinib ko'ring.`);
+        return;
+    }
+
+    const modal = document.getElementById('admin-login-modal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.getElementById('admin-pass-input').focus();
+}
+
+function closeAdminLogin() {
+    const modal = document.getElementById('admin-login-modal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.getElementById('admin-pass-input').value = '';
+}
+
+function submitAdminLogin() {
+    const passInput = document.getElementById('admin-pass-input');
+    const pass = passInput.value;
+    const now = Date.now();
+
+    if (now < blockUntil) {
+        alert("System Blocked!");
+        return;
+    }
+
+    if (pass === ADMIN_PASS || pass === localStorage.getItem('smartqiyos_admin_pass')) {
+        adminLogged = true;
+        loginAttempts = 0;
+        localStorage.setItem('smartqiyos_admin_logged', 'true');
+        localStorage.setItem('smartqiyos_login_attempts', '0');
+        
+        closeAdminLogin();
+        updateAdminButtonVisibility();
+        showSection('admin', 'navAdmin');
+        showAdminSubSection('dashboard');
+        // renderAdminPanel(); // Now fetching real data
+    } else {
+        loginAttempts++;
+        localStorage.setItem('smartqiyos_login_attempts', loginAttempts.toString());
+        
+        if (loginAttempts >= 3) {
+            blockUntil = now + (30 * 60 * 1000); // 30 minutes
+            localStorage.setItem('smartqiyos_block_until', blockUntil.toString());
+            alert("Ko'p marta xato urunish! Tizim 30 daqiqaga bloklandi.");
+            closeAdminLogin();
+        } else {
+            alert(`Parol xato! Qolgan urinishlar: ${3 - loginAttempts}`);
+            passInput.value = '';
+            passInput.focus();
+        }
+    }
+}
+
+function updateAdminButtonVisibility() {
+    const btn = document.getElementById('navAdmin');
+    if (btn) {
+        // Always show the button as an entry point, 
+        // but highight it if logged in.
+        if (adminLogged) {
+            btn.classList.add('bg-[#00ffcc]/10');
+            btn.classList.add('border-[#00ffcc]');
+        } else {
+            btn.classList.remove('bg-[#00ffcc]/10');
+            btn.classList.remove('border-[#00ffcc]');
+        }
+        btn.classList.remove('hidden');
+    }
+}
+
+function logoutAdmin() {
+    adminLogged = false;
+    localStorage.setItem('smartqiyos_admin_logged', 'false');
+    updateAdminButtonVisibility();
+    showSection('home', 'navHome');
 }
 
 let currentUser = { 
     isVip: localStorage.getItem('smartqiyos_vip') === 'true',
     userId: localStorage.getItem('smartqiyos_uid') || generateUserId(),
-    subEnd: localStorage.getItem('smartqiyos_sub_end') || null
+    subEnd: localStorage.getItem('smartqiyos_sub_end') || null,
+    firstName: localStorage.getItem('smartqiyos_fname') || "Smart",
+    lastName: localStorage.getItem('smartqiyos_lname') || "User",
+    phone: localStorage.getItem('smartqiyos_phone') || "+998 90 123 45 67"
 };
+
+// Mock Database
+let MOCK_USERS = [
+    { id: "SQ-2099", fname: "Ali", lname: "Valiyev", phone: "+998 91 111 22 33", isVip: true, subEnd: "2026-05-10" },
+    { id: "SQ-3001", fname: "Olim", lname: "Hakimov", phone: "+998 90 999 88 77", isVip: false, subEnd: null },
+    { id: "SQ-4040", fname: "Lola", lname: "Karimova", phone: "+998 93 444 55 66", isVip: false, subEnd: null },
+    { id: "SQ-7777", fname: "Jasur", lname: "Rahimov", phone: "+998 99 777 77 77", isVip: true, subEnd: "2026-05-12" }
+];
+
+// Add current user to mock database if not exists
+if (!MOCK_USERS.find(u => u.id === currentUser.userId)) {
+    MOCK_USERS.push({
+        id: currentUser.userId,
+        fname: currentUser.firstName,
+        lname: currentUser.lastName,
+        phone: currentUser.phone,
+        isVip: currentUser.isVip,
+        subEnd: currentUser.subEnd
+    });
+}
 
 function generateUserId() {
     const id = "SQ-" + Math.floor(1000 + Math.random() * 9000);
@@ -493,7 +605,7 @@ function animateValue(id, end) {
 // 2. Navigation (UPDATED)
 function showSection(section, btnId) {
     currentSection = section;
-    const sections = ['section-home', 'section-products', 'section-profile', 'section-favorites', 'section-feedback', 'section-kalkulyator'];
+    const sections = ['section-home', 'section-products', 'section-profile', 'section-favorites', 'section-feedback', 'section-kalkulyator', 'section-admin'];
     sections.forEach(s => {
         const el = document.getElementById(s);
         if(el) el.classList.add('hidden');
@@ -509,9 +621,80 @@ function showSection(section, btnId) {
     if (document.getElementById(targetSectionId)) {
         document.getElementById(targetSectionId).classList.remove('hidden');
         updatePageTitle();
+        
+        // Admin Sidebar Logic
+        const mainSidebar = document.querySelector('aside:not(#admin-sidebar)');
+        const adminSidebar = document.getElementById('admin-sidebar');
+        if (section === 'admin') {
+            mainSidebar.classList.add('hidden');
+            adminSidebar.classList.remove('hidden');
+            adminSidebar.classList.add('flex');
+            renderAdminPanel();
+        } else {
+            mainSidebar.classList.remove('hidden');
+            adminSidebar.classList.add('hidden');
+            adminSidebar.classList.remove('flex');
+        }
+
         if (section === 'profile') renderProfile();
         if (section === 'favorites') renderFavorites();
     }
+}
+
+function showAdminSubSection(subId) {
+    document.querySelectorAll('.admin-sub-section').forEach(s => s.classList.add('hidden'));
+    document.getElementById(`admin-sub-${subId}`).classList.remove('hidden');
+    
+    document.querySelectorAll('.admin-sidebar-btn').forEach(btn => btn.classList.remove('active-admin-glow'));
+    const btnMap = {
+        dashboard: 'adminNavDash',
+        users: 'adminNavUsers',
+        payments: 'adminNavPay',
+        stores: 'adminNavStores',
+        settings: 'adminNavSettings'
+    };
+    if (btnMap[subId]) document.getElementById(btnMap[subId]).classList.add('active-admin-glow');
+    
+    if (subId === 'users') renderAdminPanel();
+    if (subId === 'stores') renderAdminStores();
+    if (subId === 'payments') renderAdminPayments();
+}
+
+function renderAdminPayments() {
+    const section = document.getElementById('admin-sub-payments');
+    if (!section) return;
+    
+    section.innerHTML = `
+        <h2 class="text-3xl font-black mb-8 tracking-tighter">To'lovlar <span class="text-[#00ffcc]">Tarixi</span></h2>
+        <div class="bg-[#002320]/50 border border-[#01312b] rounded-[32px] overflow-hidden backdrop-blur-xl">
+            <table class="w-full text-left text-sm">
+                <thead class="bg-black/40 text-gray-500 uppercase text-[10px] font-black border-b border-[#01312b]">
+                    <tr>
+                        <th class="p-8">ID</th>
+                        <th class="p-8">Foydalanuvchi</th>
+                        <th class="p-8">Summa</th>
+                        <th class="p-8">Sana</th>
+                        <th class="p-8">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#01312b]">
+                    ${MOCK_PAYMENTS.map(p => `
+                        <tr class="admin-glass-row">
+                            <td class="p-8 font-mono text-[#00ffcc]">${p.id}</td>
+                            <td class="p-8 font-bold">${p.user}</td>
+                            <td class="p-8 text-white">${p.amount}</td>
+                            <td class="p-8 text-gray-500">${p.date}</td>
+                            <td class="p-8">
+                                <span class="px-3 py-1 rounded-full text-[10px] font-black ${p.status === 'Tasdiqlandi' ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'}">
+                                    ${p.status}
+                                </span>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
 }
 
 // 3. Search Logic
@@ -538,8 +721,9 @@ function handleSearch() {
 function resetHome() {
     document.getElementById('main-search').value = "";
     document.getElementById('section-products').classList.add('hidden');
+    document.getElementById('section-admin').classList.add('hidden');
     document.getElementById('section-home').classList.remove('hidden');
-    document.getElementById('page-title').textContent = "Internet Do'konlar";
+    document.getElementById('page-title').textContent = TRANSLATIONS[currentLang].pageTitleHome;
 }
 
 function renderProductCard(p) {
@@ -596,32 +780,92 @@ function renderFavorites() {
     }
 }
 
-function renderProfile() {
+async function renderProfile() {
     const t = TRANSLATIONS[currentLang];
     const container = document.getElementById('profile-container');
     if (!container) return;
-    const isVip = checkVipStatus();
+
+    try {
+        const response = await fetch(`/api/profile/${currentUser.userId}`);
+        const data = await response.json();
+        
+        // Update currentUser from API response
+        if (data && !data.error) {
+            currentUser.isVip = data.is_vip;
+            currentUser.subEnd = data.vip_end_date;
+            currentUser.firstName = data.first_name;
+            currentUser.lastName = data.last_name;
+            currentUser.phone = data.phone_number;
+        }
+    } catch (e) {
+        console.error("Profile fetch error:", e);
+    }
     
+    const isVip = checkVipStatus();
+    currentUser.isVip = isVip;
+
+    const adminLink = adminLogged ? `
+        <div class="mt-4 p-4 bg-[#00ffcc]/10 border border-[#00ffcc]/20 rounded-2xl flex items-center justify-between mb-6">
+            <span class="text-xs font-black text-[#00ffcc] uppercase tracking-widest"><i class="fas fa-user-shield mr-2"></i> Siz Adminsiz</span>
+            <button onclick="showSection('admin', 'navAdmin'); showAdminSubSection('dashboard');" class="text-[10px] bg-[#00ffcc] text-black px-4 py-2 rounded-xl font-black hover:shadow-[0_0_15px_#00ffcc] transition-all">Admin Panelga o'tish</button>
+        </div>
+    ` : '';
+
     container.innerHTML = `
-        <div class="bg-[#002320] rounded-[32px] p-10 border border-[#01312b] shadow-xl w-full max-w-3xl mx-auto flex flex-col sm:flex-row items-center gap-8 fade-in">
-            <div class="bg-gradient-to-tr from-[#00ffcc] to-teal-800 w-32 h-32 rounded-full flex items-center justify-center text-5xl font-extrabold text-black border-4 border-black/20 shadow-[0_0_30px_rgba(0,255,204,0.3)]">
-                SQ
-            </div>
-            <div class="flex-1 text-center sm:text-left">
-                <div class="flex flex-col sm:flex-row items-center gap-3 mb-4">
-                    <h3 class="text-3xl font-black text-white">Smart User</h3>
-                    ${isVip ? `<span class="bg-yellow-500 text-black text-[10px] font-black px-4 py-1.5 rounded-full shadow-lg"><i class="fas fa-crown"></i> ${t.statusVip}</span>` : `<span class="bg-gray-700 text-white text-[10px] font-black px-4 py-1.5 rounded-full">${t.statusBasic}</span>`}
+        <div class="bg-[#002320] rounded-[40px] p-10 border border-[#01312b] shadow-2xl w-full max-w-4xl mx-auto relative overflow-hidden fade-in">
+            <div class="tech-bg opacity-10 absolute inset-0 pointer-events-none"></div>
+            
+            <div class="relative z-10">
+                <div class="flex flex-col sm:flex-row items-center gap-8 mb-10">
+                    <div class="w-32 h-32 rounded-full bg-gradient-to-tr from-[#00ffcc] to-teal-800 flex items-center justify-center text-4xl font-extrabold text-[#001211] border-4 border-[#001211]/50 shadow-[0_0_30px_rgba(0,255,204,0.3)]">
+                        ${currentUser.firstName[0]}${currentUser.lastName[0]}
+                    </div>
+                    <div class="text-center sm:text-left">
+                        <div class="flex flex-col sm:flex-row items-center gap-3 mb-2">
+                            <h3 class="text-4xl font-black text-white tracking-tighter">${currentUser.firstName} <span class="text-[#00ffcc]">${currentUser.lastName}</span></h3>
+                            ${isVip ? `<span class="bg-yellow-500 text-black text-[10px] font-black px-4 py-1.5 rounded-full shadow-lg"><i class="fas fa-crown"></i> VIP</span>` : `<span class="bg-gray-700 text-white text-[10px] font-black px-4 py-1.5 rounded-full">ODDIY</span>`}
+                        </div>
+                        <p class="text-gray-500 font-mono text-sm tracking-wider">${currentUser.userId}</p>
+                    </div>
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-black/40 rounded-2xl p-5 border border-white/5 transition hover:border-[#00ffcc]/30">
+
+                ${adminLink}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                    <div class="bg-black/40 rounded-[32px] p-8 border border-[#01312b] hover:border-[#00ffcc]/30 transition-all">
                         <p class="text-[10px] text-gray-500 uppercase font-black mb-1">${t.profileId}</p>
-                        <p class="font-mono text-[#00ffcc] text-xl font-black tracking-wider">${currentUser.userId}</p>
+                        <p class="font-mono text-[#00ffcc] text-xl font-black tracking-wider mb-4">${currentUser.userId}</p>
+                        <p class="text-[10px] text-gray-500 uppercase font-black mb-1">Telefon raqam</p>
+                        <p class="text-white text-xl font-bold">${currentUser.phone}</p>
                     </div>
-                    <div class="bg-black/40 rounded-2xl p-5 border border-white/5 transition hover:border-[#00ffcc]/30">
-                        <p class="text-[10px] text-gray-500 uppercase font-black mb-1">${t.expDate}</p>
-                        <p class="text-white text-xl font-bold">${currentUser.subEnd || '---'}</p>
+
+                    ${!isVip ? `
+                    <div class="bg-gradient-to-br from-yellow-500/10 to-transparent rounded-[32px] p-8 border border-yellow-500/20 hover:border-yellow-500/50 transition-all flex flex-col justify-between">
+                        <div>
+                            <h4 class="text-yellow-500 font-black uppercase text-xs tracking-widest mb-2"><i class="fas fa-bolt"></i> VIP Muddat</h4>
+                            <p class="text-gray-400 text-sm mb-4">Cheklanmagan imtiyozlarga ega bo'lish uchun VIP rejasini faollashtiring.</p>
+                        </div>
+                        <a href="https://t.me/SmartQiyosBot" target="_blank" class="w-full bg-yellow-500 text-black text-center py-4 rounded-2xl font-black hover:shadow-[0_0_20px_rgba(234,179,8,0.4)] transition-all">
+                            <i class="fab fa-telegram-plane mr-2"></i> Telegram bot orqali
+                        </a>
                     </div>
+                    ` : `
+                    <div class="bg-green-500/5 rounded-[32px] p-8 border border-green-500/20">
+                        <h4 class="text-green-500 font-black uppercase text-xs tracking-widest mb-2"><i class="fas fa-crown"></i> VIP Aktiv</h4>
+                        <div class="text-[10px] text-gray-500 uppercase font-black mb-1">${t.expDate}</div>
+                        <p class="text-white text-3xl font-black">${currentUser.subEnd}</p>
+                        <p class="text-[10px] text-green-500/50 font-bold mt-4">Barcha do'konlar ochiq</p>
+                    </div>
+                    `}
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button onclick="logout()" class="flex-1 bg-red-500/10 text-red-500 py-4 rounded-2xl font-bold hover:bg-red-500 text-white transition-all">
+                        <i class="fas fa-sign-out-alt mr-2"></i> ${t.profile.logout}
+                    </button>
+                    <button onclick="showSection('home', 'navHome')" class="flex-1 bg-white/5 text-gray-400 py-4 rounded-2xl font-bold hover:text-white transition-all">
+                        Asosiy sahifaga qaytish
+                    </button>
                 </div>
             </div>
         </div>
@@ -651,6 +895,14 @@ function handleVipSubscription() {
     const telegramBot = "https://t.me/saydjamolG4S";
     const t = TRANSLATIONS[currentLang];
     const message = `Assalomu alaykum, ID: ${currentUser.userId} uchun obuna sotib olmoqchiman.`;
+    
+    alert(`DIQQAT: To'lovni amalga oshirish uchun ID raqamingizni (${currentUser.userId}) nusxalab oling va Telegram orqali adminga yuboring.`);
+    
+    // Copy to clipboard attempt
+    navigator.clipboard.writeText(currentUser.userId).then(() => {
+        console.log("ID copied to clipboard");
+    });
+
     window.open(`${telegramBot}?text=${encodeURIComponent(message)}`, '_blank');
 }
 
@@ -696,6 +948,177 @@ function closeVip() {
     const box = document.getElementById('vip-box');
     box.classList.add('scale-95');
     box.classList.remove('scale-100');
+}
+
+// ============================================================
+// 👤 ADMIN PANEL LOGIC
+// ============================================================
+
+async function renderAdminPanel() {
+    const table = document.getElementById('admin-user-table');
+    const totalUsersEl = document.getElementById('stat-total-users');
+    const vipUsersEl = document.getElementById('stat-vip-users');
+    
+    if(!table) return;
+
+    let users = [];
+    try {
+        const response = await fetch('/api/admin/users');
+        users = await response.json();
+    } catch (e) {
+        console.error("Admin user list fetch error:", e);
+    }
+
+    totalUsersEl.textContent = users.length;
+    vipUsersEl.textContent = users.filter(u => u.is_vip).length;
+
+    table.innerHTML = users.map(u => {
+        let remainingTime = "---";
+        if (u.is_vip && u.vip_end_date) {
+            const diff = new Date(u.vip_end_date) - new Date();
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                remainingTime = `${days} kun ${hours} soat`;
+            } else {
+                remainingTime = "Tugagan";
+            }
+        }
+
+        const idCode = u.user_id_code || u.id; // Fallback if needed
+
+        return `
+            <tr class="admin-glass-row">
+                <td class="p-8">
+                    <div class="font-bold text-white">${u.first_name} ${u.last_name}</div>
+                    <div class="text-[10px] text-gray-500">${u.phone_number}</div>
+                </td>
+                <td class="p-8">
+                    <span class="font-mono text-[#00ffcc] font-bold">${idCode}</span>
+                </td>
+                <td class="p-8">
+                    ${u.is_vip 
+                        ? `<span class="status-badge status-vip"><i class="fas fa-crown mr-1"></i> VIP</span>` 
+                        : `<span class="status-badge status-basic">Oddiy</span>`}
+                </td>
+                <td class="p-8 font-bold text-gray-400">
+                    ${remainingTime}
+                </td>
+                <td class="p-8">
+                    <div class="flex gap-2">
+                        ${!u.is_vip ? `<button onclick="activateVip('${idCode}')" class="admin-btn-vip px-4 py-2 rounded-xl text-xs font-bold transition-all"><i class="fas fa-bolt mr-1"></i> VIP qilish</button>` : ''}
+                        <button onclick="blockUser('${idCode}')" class="bg-white/5 hover:bg-orange-500/20 text-gray-400 hover:text-orange-500 w-10 h-10 rounded-xl transition-all flex items-center justify-center">
+                            <i class="fas fa-ban"></i>
+                        </button>
+                        <button onclick="deleteUser('${idCode}')" class="bg-white/5 hover:bg-red-500/20 text-gray-400 hover:text-red-500 w-10 h-10 rounded-xl transition-all flex items-center justify-center">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function quickActivateVip() {
+    const id = document.getElementById('admin-quick-search').value.trim();
+    if (!id) return;
+    activateVip(id);
+    document.getElementById('admin-quick-search').value = '';
+}
+
+function blockUser(id) {
+    alert(`Foydalanuvchi ${id} bloklandi!`);
+}
+
+function deleteUser(id) {
+    if (confirm(`Haqiqatan ham ${id} foydalanuvchini o'chirib tashlamoqchimisiz?`)) {
+        MOCK_USERS = MOCK_USERS.filter(u => u.id !== id);
+        renderAdminPanel();
+    }
+}
+
+function renderAdminStores() {
+    const grid = document.getElementById('admin-stores-grid');
+    if (!grid) return;
+    grid.innerHTML = STORES.map(s => `
+        <div class="bg-[#002320] border border-[#01312b] p-6 rounded-[32px] hover:border-[#00ffcc]/30 transition-all">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 rounded-xl ${s.brandColor} flex items-center justify-center overflow-hidden">
+                    <img src="${s.banner}" class="w-full h-full object-cover opacity-50">
+                </div>
+                <div>
+                    <h4 class="font-bold">${s.name}</h4>
+                    <p class="text-[10px] text-gray-500">${s.url}</p>
+                </div>
+            </div>
+            <div class="space-y-3">
+                <input type="text" value="${s.url}" class="w-full bg-black/40 border border-[#01312b] rounded-xl py-2 px-4 text-xs outline-none focus:border-[#00ffcc]">
+                <button onclick="alert('Store info updated!')" class="w-full bg-[#01312b] text-[#00ffcc] py-2 rounded-xl text-xs font-bold hover:bg-[#00ffcc] hover:text-black transition-all">Yangilash</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function setTheme(theme) {
+    const bp = document.querySelector('.blueprint-bg');
+    const mc = document.querySelector('.microchip-bg');
+    if (theme === 'blueprint') {
+        bp.classList.remove('opacity-0');
+        bp.classList.add('opacity-10');
+        mc.classList.add('opacity-0');
+        mc.classList.remove('opacity-10');
+    } else {
+        mc.classList.remove('opacity-0');
+        mc.classList.add('opacity-10');
+        bp.classList.add('opacity-0');
+        bp.classList.remove('opacity-10');
+    }
+    localStorage.setItem('smartqiyos_theme', theme);
+}
+
+function updateAdminPass() {
+    const pass = document.getElementById('new-admin-pass').value;
+    if (pass.length < 4) {
+        alert("Parol kamida 4 ta belgidan iborat bo'lishi kerak!");
+        return;
+    }
+    localStorage.setItem('smartqiyos_admin_pass', pass);
+    alert("Admin paroli muvaffaqiyatli o'zgartirildi!");
+    document.getElementById('new-admin-pass').value = '';
+}
+
+function adminFilterUsers() {
+    const query = document.getElementById('admin-user-search').value.toLowerCase();
+    const rows = document.querySelectorAll('#admin-user-table tr');
+    rows.forEach(row => {
+        const id = row.cells[1].innerText.toLowerCase();
+        row.style.display = id.includes(query) ? "" : "none";
+    });
+}
+
+async function activateVip(userCode) {
+    try {
+        const response = await fetch('/api/admin/activate-vip', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id_code: userCode })
+        });
+        const resData = await response.json();
+        
+        if (resData.success) {
+            alert(resData.message);
+            if (userCode === currentUser.userId) {
+                renderProfile();
+            }
+            renderAdminPanel();
+        } else {
+            alert("Xatolik: " + resData.message);
+        }
+    } catch (e) {
+        console.error("VIP activation error:", e);
+        alert("Server bilan bo'glanishda xatolik!");
+    }
 }
 
 // 5. Catalog System
@@ -760,8 +1183,28 @@ function backToCatalog() {
     document.getElementById('catalog-title').textContent = "Katalog";
 }
 
+// PARALLAX EFFECT
+document.addEventListener('mousemove', (e) => {
+    const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+    const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+    const bg = document.querySelector('.tech-bg');
+    if (bg) {
+        bg.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    }
+});
+
 // INIT
 document.addEventListener('DOMContentLoaded', () => {
     setLanguage(currentLang);
     checkVipStatus();
+    updateAdminButtonVisibility();
+
+    // Theme initialization
+    const savedTheme = localStorage.getItem('smartqiyos_theme') || 'microchip';
+    setTheme(savedTheme);
+
+    // Check URL for admin-login
+    if (window.location.hash === '#admin-login') {
+        handleAdminLogin();
+    }
 });
