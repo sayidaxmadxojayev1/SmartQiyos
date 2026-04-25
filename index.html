@@ -18,8 +18,11 @@
     <div class="glow-orb orb-2"></div>
     <div class="glow-orb orb-3"></div>
 
+    <!-- Mobile Overlay for Sidebar -->
+    <div id="mobile-overlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden backdrop-blur-sm transition-opacity opacity-0"></div>
+
     <!-- Sidebar -->
-    <aside class="w-72 glass-sidebar flex flex-col p-6 z-10 relative">
+    <aside id="main-sidebar" class="w-72 glass-sidebar flex flex-col p-6 z-40 fixed inset-y-0 left-0 transform -translate-x-full lg:relative lg:translate-x-0 transition-transform duration-300 ease-in-out">
         <h1 class="text-2xl font-bold text-[#00ffcc] mb-10">Smart<span class="text-white">Qiyos</span></h1>
         
         <nav class="flex-1 space-y-2 mt-4">
@@ -32,19 +35,19 @@
                 <button onclick="showSection('kalkulyator', 'navCalc')" id="navCalc" class="sidebar-btn w-full flex items-center px-6 py-4 rounded-2xl transition-all duration-300 text-gray-400 hover:text-[#00ffcc]">
                     <i class="fas fa-calculator mr-4 w-6"></i> Kalkulyator
                 </button>
-                <button onclick="checkVip('vip-search')" id="navSmartSearch" class="sidebar-btn w-full flex items-center px-6 py-4 rounded-2xl transition-all duration-300 text-gray-400 hover:text-[#00ffcc]">
+                <button onclick="checkVip('vip-search')" id="navSmartSearch" class="sidebar-btn w-full flex items-center px-6 py-4 rounded-2xl transition-all duration-300 text-gray-400 hover:text-[#00ffcc] restricted">
                     <div class="flex-1 flex items-center">
                         <i class="fas fa-bolt mr-4 w-6"></i> Aqlli qidiruv
                     </div>
-                    <span class="bg-yellow-500 p-1 rounded-md text-[10px] text-black">
+                    <span class="premium-badge-gold">
                         <i class="fas fa-crown"></i>
                     </span>
                 </button>
-                <button onclick="checkVip('compare')" id="navCompare" class="sidebar-btn w-full flex items-center px-6 py-4 rounded-2xl transition-all duration-300 text-gray-400 hover:text-[#00ffcc]">
+                <button onclick="checkVip('compare')" id="navCompare" class="sidebar-btn w-full flex items-center px-6 py-4 rounded-2xl transition-all duration-300 text-gray-400 hover:text-[#00ffcc] restricted">
                     <div class="flex-1 flex items-center">
                         <i class="fas fa-balance-scale mr-4 w-6"></i> Solishtirish
                     </div>
-                    <span class="bg-yellow-500 p-1 rounded-md text-[10px] text-black">
+                    <span class="premium-badge-gold">
                         <i class="fas fa-crown"></i>
                     </span>
                 </button>
@@ -107,9 +110,15 @@
     </aside>
 
     <!-- Main View -->
-    <main class="flex-1 p-10 overflow-y-auto relative z-10 custom-scrollbar">
+    <main class="flex-1 p-4 lg:p-10 pb-24 lg:pb-10 overflow-y-auto relative z-10 custom-scrollbar">
         
-        <header class="flex justify-between items-center mb-10">
+        <!-- Mobile Header (Burger Menu) -->
+        <div class="lg:hidden flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-[#00ffcc] tracking-tight">Smart<span class="text-white">Qiyos</span></h1>
+            <button onclick="toggleMobileMenu()" class="text-white text-2xl p-2 hover:text-[#00ffcc] transition-colors"><i class="fas fa-bars"></i></button>
+        </div>
+
+        <header class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 mb-10">
             <h2 id="page-title" class="text-3xl font-bold">Internet Do'konlar</h2>
             <div class="flex items-center space-x-4">
                 <div class="relative">
@@ -129,27 +138,28 @@
         </header>
 
         <!-- Stores View -->
-        <div id="section-home" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div id="section-home" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 min-[1600px]:grid-cols-5 gap-6 lg:gap-8">
             <!-- Dynamically via JS -->
         </div>
 
         <!-- Products / Search Results View -->
         <div id="section-products" class="hidden">
             <button onclick="resetHome()" class="mb-6 text-[#00ffcc] hover:underline flex items-center gap-2 font-bold"><i class="fas fa-arrow-left"></i> Orqaga qaytish</button>
-            <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-6" id="products-grid">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 min-[1600px]:grid-cols-5 gap-6 lg:gap-8" id="products-grid">
                 <!-- Dynamically via JS -->
             </div>
         </div>
 
-        <!-- Profile section -->
-        <div id="section-profile" class="hidden fade-in px-8">
-            <h2 id="profile-page-title" class="text-3xl font-black mb-8">Shaxsiy Kabinet</h2>
-            <div id="profile-container" class="grid grid-cols-1 gap-8 w-full"></div>
+        <!-- Profile View -->
+        <div id="section-profile" class="hidden">
+            <h2 class="text-3xl font-bold mb-10">Mening Profilim</h2>
+            <div id="profile-container" class="grid grid-cols-1 gap-8 w-full max-w-4xl mx-auto"></div>
         </div>
 
         <!-- Favorites View -->
-        <div id="section-favorites" class="hidden fade-in">
-            <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-6" id="favorites-grid">
+        <div id="section-favorites" class="hidden">
+            <h2 class="text-3xl font-bold mb-10">Saqlanganlar</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 min-[1600px]:grid-cols-5 gap-6 lg:gap-8" id="favorites-grid">
                 <!-- Dynamic via JS -->
             </div>
         </div>
@@ -244,11 +254,11 @@
         </div>
 
         <!-- VIP Modal -->
-        <div id="vip-modal" class="fixed inset-0 modal-bg z-[100] hidden flex items-center justify-center fade-in">
+        <div id="vip-modal" class="fixed inset-0 modal-bg z-[300] hidden flex items-center justify-center fade-in">
             <div class="bg-[#002320] p-10 rounded-[40px] border border-[#00ffcc]/30 text-center max-w-md shadow-[0_0_50px_rgba(0,255,204,0.15)] transform transition-transform scale-95" id="vip-box">
                 <i class="fas fa-crown text-6xl text-yellow-500 mb-6 block"></i>
-                <h2 id="vip-title-text" class="text-3xl font-black mb-4">Pullik Obuna</h2>
-                <p id="vip-desc-text" class="text-gray-400 mb-8 px-4">Ushbu aqlli bo'limdan foydalanish uchun VIP obunani faollashtiring.</p>
+                <h2 id="vip-title-text" class="text-3xl font-black mb-4">Premium Funksiya</h2>
+                <p id="vip-desc-text" class="text-gray-400 mb-8 px-4">Ushbu funksiyadan foydalanish uchun sizda faol obuna bo‘lishi kerak. Obuna narxi: 3,999 so‘m / 15 kun.</p>
                 
                 <div class="bg-black/30 rounded-3xl p-6 mb-8 border border-white/5">
                     <p id="vip-price-label" class="text-xs text-gray-500 uppercase font-bold mb-1">Xizmat narxi</p>
@@ -258,7 +268,7 @@
 
                 <div class="flex flex-col gap-3">
                     <button id="vip-buy-btn" onclick="handleVipSubscription()" class="w-full bg-gradient-to-r from-[#00ffcc] to-[#3b82f6] text-[#001211] py-5 rounded-[24px] font-black text-lg transition-all hover:shadow-[0_0_25px_rgba(0,255,204,0.4)]">
-                        <i class="fab fa-telegram-plane mr-2"></i> Hoziroq sotib olish
+                        <i class="fab fa-telegram-plane mr-2"></i> Sotib olish
                     </button>
                     <button id="vip-later-btn" onclick="closeVip()" class="w-full py-4 text-gray-500 hover:text-white font-bold transition text-sm">Keyinroq</button>
                 </div>
@@ -266,15 +276,25 @@
         </div>
 
         <!-- Catalog Modal -->
-        <div id="catalog-modal" class="fixed inset-0 bg-black/95 backdrop-blur-2xl z-[200] hidden flex-col p-10 overflow-y-auto fade-in">
-            <div class="flex justify-between items-center mb-10 max-w-6xl mx-auto w-full">
-                <div class="flex items-center space-x-6">
-                    <button onclick="backToCatalog()" id="catalog-back-btn" class="hidden bg-white/10 hover:bg-[#00ffcc] hover:text-black p-3 rounded-full transition">
-                        <i class="fas fa-arrow-left text-xl"></i>
-                    </button>
-                    <h2 class="text-4xl font-extrabold" id="catalog-title">Katalog</h2>
+        <div id="catalog-modal" class="fixed inset-0 bg-black/95 backdrop-blur-2xl z-[200] hidden flex-col p-6 sm:p-10 overflow-y-auto fade-in">
+            <!-- Header -->
+            <div class="relative flex items-center justify-center mb-10 max-w-6xl mx-auto w-full">
+                <!-- Back Button (Left) -->
+                <button onclick="backToPrevStage()" id="catalog-back-btn" style="display:none" class="absolute left-0 bg-white/10 hover:bg-[#00ffcc] hover:text-black p-3 rounded-full transition w-12 h-12 items-center justify-center">
+                    <i class="fas fa-arrow-left text-xl"></i>
+                </button>
+                <!-- Title (Center) -->
+                <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tighter" id="catalog-title">Katalog</h2>
+                <!-- Close Button (Right) -->
+                <button onclick="closeCatalog()" class="absolute right-0 text-3xl sm:text-4xl hover:text-red-500 transition-all">&times;</button>
+            </div>
+
+            <!-- Loading State -->
+            <div id="catalog-loading" class="hidden absolute inset-0 bg-[#001211]/80 backdrop-blur-md z-[210] flex items-center justify-center">
+                <div class="text-center">
+                    <div class="w-16 h-16 border-4 border-[#00ffcc] border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
+                    <p class="text-[#00ffcc] font-black uppercase tracking-widest animate-pulse">Narxlar yangilanmoqda...</p>
                 </div>
-                <button onclick="closeCatalog()" class="text-4xl hover:text-red-500 transition">&times;</button>
             </div>
 
             <div id="catalog-main" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto w-full">
@@ -368,6 +388,42 @@
 
             <div id="admin-sub-stores" class="admin-sub-section hidden">
                 <h2 class="text-3xl font-black mb-8 tracking-tighter">Do'konlar <span class="text-[#00ffcc]">Boshqaruvi</span></h2>
+                
+                <!-- Add New Store Form -->
+                <div class="bg-black/30 border border-[#01312b] rounded-[28px] p-6 mb-8">
+                    <h3 class="text-sm font-black text-[#00ffcc] uppercase tracking-widest mb-5"><i class="fas fa-plus-circle mr-2"></i>Yangi Do'kon Qo'shish</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div>
+                            <label class="text-[10px] uppercase text-gray-500 font-bold block mb-1">Do'kon nomi</label>
+                            <input id="new-store-name" type="text" placeholder="Texnomart" class="w-full bg-black/40 border border-[#01312b] rounded-xl py-3 px-4 text-sm outline-none focus:border-[#00ffcc]">
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase text-gray-500 font-bold block mb-1">Sayt URL</label>
+                            <input id="new-store-url" type="url" placeholder="https://example.uz" class="w-full bg-black/40 border border-[#01312b] rounded-xl py-3 px-4 text-sm outline-none focus:border-[#00ffcc]">
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase text-gray-500 font-bold block mb-1">To'lov muddati</label>
+                            <input id="new-store-terms" type="text" placeholder="12-24 oy" class="w-full bg-black/40 border border-[#01312b] rounded-xl py-3 px-4 text-sm outline-none focus:border-[#00ffcc]">
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase text-gray-500 font-bold block mb-1">Kerakli hujjat</label>
+                            <input id="new-store-docs" type="text" placeholder="Faqat pasport" class="w-full bg-black/40 border border-[#01312b] rounded-xl py-3 px-4 text-sm outline-none focus:border-[#00ffcc]">
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase text-gray-500 font-bold block mb-1">Reyting (1-5)</label>
+                            <input id="new-store-rating" type="number" min="1" max="5" step="0.1" placeholder="4.5" class="w-full bg-black/40 border border-[#01312b] rounded-xl py-3 px-4 text-sm outline-none focus:border-[#00ffcc]">
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase text-gray-500 font-bold block mb-1">Banner URL (ixtiyoriy)</label>
+                            <input id="new-store-banner" type="url" placeholder="https://images.unsplash.com/..." class="w-full bg-black/40 border border-[#01312b] rounded-xl py-3 px-4 text-sm outline-none focus:border-[#00ffcc]">
+                        </div>
+                    </div>
+                    <button onclick="adminAddStore()" class="mt-5 bg-[#00ffcc] text-black px-8 py-3 rounded-xl font-black text-sm hover:shadow-[0_0_15px_#00ffcc] transition-all">
+                        <i class="fas fa-save mr-2"></i>Qo'shish va Saqlash
+                    </button>
+                </div>
+
+                <!-- Stores Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="admin-stores-grid">
                     <!-- Dynamic -->
                 </div>
@@ -385,10 +441,28 @@
                             </div>
                         </div>
                         <div>
-                            <label class="block text-xs uppercase font-black text-gray-500 mb-4 tracking-widest">Admin Parol</label>
-                            <div class="flex gap-4">
-                                <input type="password" id="new-admin-pass" placeholder="Yangi parol" class="flex-1 bg-black/40 border border-[#01312b] rounded-2xl py-4 px-6 outline-none focus:border-[#00ffcc] transition-all">
-                                <button onclick="updateAdminPass()" class="bg-[#01312b] text-[#00ffcc] px-8 py-4 rounded-2xl font-black hover:bg-[#00ffcc] hover:text-black transition-all">Yangilash</button>
+                            <label class="block text-xs uppercase font-black text-gray-500 mb-4 tracking-widest text-center sm:text-left">Xavfsizlik Kodi (Authorization Code)</label>
+                            
+                            <!-- Current Code View -->
+                            <div class="mb-6 bg-black/40 border border-[#01312b] rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div>
+                                    <p class="text-[10px] text-gray-500 uppercase font-black mb-1">Amaldagi kod</p>
+                                    <p id="admin-code-display" class="font-mono text-xl text-white tracking-[0.5em]">••••••</p>
+                                </div>
+                                <button onclick="revealAdminCode()" class="w-full sm:w-auto bg-[#01312b] hover:bg-[#00ffcc] hover:text-black text-[#00ffcc] px-6 py-3 rounded-xl text-xs font-black transition-all">
+                                    <i class="fas fa-eye mr-2"></i> Kodni ko'rish
+                                </button>
+                            </div>
+
+                            <!-- Change Code -->
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <div class="relative flex-1">
+                                    <input type="password" id="new-admin-pass" placeholder="Yangi kodni kiriting" class="w-full bg-black/40 border border-[#01312b] rounded-2xl py-4 px-6 outline-none focus:border-[#00ffcc] transition-all">
+                                    <button onclick="togglePasswordVisibility('new-admin-pass', 'eye-icon-new')" class="absolute right-5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#00ffcc] transition-colors">
+                                        <i id="eye-icon-new" class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <button onclick="updateAdminPass()" class="bg-[#00ffcc] text-[#001211] px-10 py-4 rounded-2xl font-black hover:shadow-[0_0_20px_#00ffcc] transition-all">Yangilash</button>
                             </div>
                         </div>
                     </div>
@@ -412,7 +486,10 @@
                 <div class="space-y-4 mb-8">
                     <div class="relative">
                         <i class="fas fa-key absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
-                        <input type="password" id="admin-pass-input" placeholder="Parol" class="w-full bg-black/40 border border-[#01312b] rounded-2xl py-4 pl-12 pr-6 outline-none focus:border-[#00ffcc] focus:shadow-[0_0_15px_rgba(0,255,204,0.2)] transition-all">
+                        <input type="password" id="admin-pass-input" placeholder="Kodni kiriting" class="w-full bg-black/40 border border-[#01312b] rounded-2xl py-4 pl-12 pr-14 outline-none focus:border-[#00ffcc] focus:shadow-[0_0_15px_rgba(0,255,204,0.2)] transition-all">
+                        <button onclick="togglePasswordVisibility('admin-pass-input', 'eye-icon-login')" class="absolute right-5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#00ffcc] transition-colors">
+                            <i id="eye-icon-login" class="fas fa-eye"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -423,6 +500,22 @@
             </div>
         </div>
     </div>
+
+    <!-- Mobile Bottom Nav -->
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-[#001211]/95 backdrop-blur-xl border-t border-[#00ffcc]/20 z-50 flex justify-around items-center p-3 pb-safe">
+        <button onclick="showSection('home', 'navHome')" class="text-gray-400 hover:text-[#00ffcc] focus:text-[#00ffcc] flex flex-col items-center p-2 min-h-[44px] min-w-[44px] transition-colors">
+            <i class="fas fa-home text-xl mb-1"></i>
+            <span class="text-[10px] font-bold">Asosiy</span>
+        </button>
+        <button onclick="openCatalog()" class="text-gray-400 hover:text-[#00ffcc] focus:text-[#00ffcc] flex flex-col items-center p-2 min-h-[44px] min-w-[44px] transition-colors">
+            <i class="fas fa-th-large text-xl mb-1"></i>
+            <span class="text-[10px] font-bold">Katalog</span>
+        </button>
+        <button onclick="showSection('profile', 'navProf')" class="text-gray-400 hover:text-[#00ffcc] focus:text-[#00ffcc] flex flex-col items-center p-2 min-h-[44px] min-w-[44px] transition-colors">
+            <i class="fas fa-user text-xl mb-1"></i>
+            <span class="text-[10px] font-bold">Profil</span>
+        </button>
+    </nav>
 
     <script src="app.js"></script>
 </body>

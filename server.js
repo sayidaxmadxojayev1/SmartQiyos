@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const app = express();
 app.use(express.json());
+app.use(express.static('.')); // Frontend fayllarini serve qilish
 
 // 1. Ma'lumotlar bazasiga ulanish
 const db = mysql.createConnection({
@@ -45,7 +46,7 @@ app.get('/api/admin/users', (req, res) => {
     });
 });
 
-// 3. ADMIN: Foydalanuvchini VIP qilish (15 kunga)
+// 3.1. ADMIN: Foydalanuvchini VIP qilish (15 kunga)
 app.post('/api/admin/activate-vip', (req, res) => {
     const { user_id_code } = req.body;
     
@@ -67,7 +68,67 @@ app.post('/api/admin/activate-vip', (req, res) => {
     });
 });
 
-// 4. Serverni ishga tushirish
+// 4. Real-time Price Comparison API
+const priceCache = new Map();
+
+app.get('/api/prices', (req, res) => {
+    const { category, brand } = req.query;
+    if (!category || !brand) return res.status(400).json({ error: "Kategoriya va Brend talab qilinadi" });
+
+    const cacheKey = `${category}_${brand}`;
+    const cachedData = priceCache.get(cacheKey);
+    const now = Date.now();
+
+    // Cache logic: 1 hour (3600000ms)
+    if (cachedData && (now - cachedData.timestamp < 3600000)) {
+        return res.json(cachedData.products);
+    }
+
+    // Real-time Parsing Simulation (In real world, use Puppeteer/Axios)
+    // Here we generate realistic variations based on the brand
+    const stores = [
+        { name: "Uzum", url: "https://uzum.uz" },
+        { name: "Olcha", url: "https://olcha.uz" },
+        { name: "MediaPark", url: "https://mediapark.uz" },
+        { name: "Elmakon", url: "https://elmakon.uz" }
+    ];
+
+    const models = {
+        'Samsung': ['Galaxy S24 Ultra', 'Galaxy A55', 'Galaxy Tab S9'],
+        'Apple': ['iPhone 15 Pro Max', 'iPad Pro M2', 'MacBook Air M3'],
+        'Xiaomi': ['Redmi Note 13', 'Xiaomi 14 Ultra', 'POCO F6'],
+        'Oppo': ['Reno 11 Pro', 'Find X7 Ultra', 'A78']
+    };
+
+    const requestedModels = models[brand] || [`${brand} High-Tech Model`, `${brand} Basic Model`];
+    
+    const results = requestedModels.map((model, idx) => {
+        const basePrice = 5000000 + (Math.random() * 10000000);
+        return {
+            id: `rt-${brand}-${idx}`,
+            name: `${brand} ${model}`,
+            brand: brand,
+            category: category,
+            img: `https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=300`, // Placeholder
+            price: Math.round(basePrice / 1000) * 1000,
+            stores: stores.map(s => ({
+                name: s.name,
+                price: Math.round((basePrice * (0.95 + Math.random() * 0.1)) / 1000) * 1000,
+                url: `${s.url}/search?q=${encodeURIComponent(brand + ' ' + model)}`
+            }))
+        };
+    });
+
+    // Save to cache
+    priceCache.set(cacheKey, { timestamp: now, products: results });
+
+    // Simulate network delay
+    setTimeout(() => {
+        res.json(results);
+    }, 1500);
+});
+
+// 5. Serverni ishga tushirish
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server http://localhost:${PORT} manzilida ishlamoqda...`);
