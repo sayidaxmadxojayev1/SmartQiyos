@@ -119,14 +119,23 @@
         </div>
 
         <header class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 mb-10">
-            <h2 id="page-title" class="text-3xl font-bold">Internet Do'konlar</h2>
-            <div class="flex items-center space-x-4">
-                <div class="relative">
-                    <input type="text" id="main-search" oninput="handleSearch()" placeholder="Mahsulot qidirish..." class="bg-[#002320] border border-[#01312b] rounded-full py-2 px-10 focus:border-[#00ffcc] outline-none transition-all w-80 shadow-lg placeholder-gray-500">
-                    <i class="fas fa-search absolute left-4 top-3 text-gray-500"></i>
+            <div class="flex justify-between items-center w-full lg:w-auto">
+                <h2 id="page-title" class="text-3xl font-bold">Internet Do'konlar</h2>
+                <div id="lang-bar" class="lg:hidden flex items-center gap-2 text-[10px] font-bold bg-black/30 px-3 py-1.5 rounded-full border border-white/5">
+                    <button id="lang-uz-mob" onclick="setLanguage('uz')" class="lang-btn text-white transition-colors">UZ</button>
+                    <span class="text-white/10">|</span>
+                    <button id="lang-ru-mob" onclick="setLanguage('ru')" class="lang-btn text-gray-500 transition-colors">RU</button>
                 </div>
-                <div class="flex items-center gap-4">
-                    <div id="lang-bar" class="flex items-center gap-2 text-xs font-bold bg-black/30 px-3 py-1.5 rounded-full border border-white/5">
+            </div>
+            
+            <div class="flex flex-col lg:flex-row items-center gap-4 w-full lg:w-auto">
+                <div class="relative w-full lg:w-auto">
+                    <input type="text" id="main-search" oninput="handleSearch()" placeholder="Mahsulot qidirish..." class="bg-[#002320] border border-[#01312b] rounded-full py-3 lg:py-2 px-10 focus:border-[#00ffcc] outline-none transition-all w-full lg:w-80 shadow-lg placeholder-gray-500 text-sm">
+                    <i class="fas fa-search absolute left-4 top-3.5 lg:top-3 text-gray-500"></i>
+                </div>
+                
+                <div class="hidden lg:flex items-center gap-4">
+                    <div id="lang-bar-desk" class="flex items-center gap-2 text-xs font-bold bg-black/30 px-3 py-1.5 rounded-full border border-white/5">
                         <button id="lang-uz" onclick="setLanguage('uz')" class="lang-btn text-white transition-colors">UZ</button>
                         <span class="text-white/10">|</span>
                         <button id="lang-ru" onclick="setLanguage('ru')" class="lang-btn text-gray-500 transition-colors">RU</button>

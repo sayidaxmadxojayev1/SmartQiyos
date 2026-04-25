@@ -621,14 +621,18 @@ function renderStores() {
 
     grid.innerHTML = `
         <!-- Filter & Sort Controls -->
-        <div class="col-span-full mb-8">
-            <div class="inline-flex flex-wrap gap-2 items-center bg-black/30 backdrop-blur border border-white/5 rounded-2xl px-5 py-3 mb-3">
-                <span class="text-[10px] text-gray-500 uppercase tracking-widest font-black mr-1">FILTRLASH:</span>
-                ${filterBtns}
+        <div class="col-span-full mb-8 flex flex-col w-full">
+            <div class="overflow-x-auto w-full pb-2 mb-2 no-scrollbar">
+                <div class="inline-flex flex-nowrap items-center bg-black/30 backdrop-blur border border-white/5 rounded-2xl px-4 py-2 min-w-max gap-2">
+                    <span class="text-[10px] text-gray-500 uppercase tracking-widest font-black mr-1">FILTRLASH:</span>
+                    ${filterBtns}
+                </div>
             </div>
-            <div class="inline-flex flex-wrap gap-2 items-center bg-black/20 backdrop-blur border border-white/5 rounded-2xl px-5 py-3 ml-0 sm:ml-3">
-                <span class="text-[10px] text-gray-500 uppercase tracking-widest font-black mr-1">SARALASH:</span>
-                ${sortBtns}
+            <div class="overflow-x-auto w-full pb-2 no-scrollbar">
+                <div class="inline-flex flex-nowrap items-center bg-black/20 backdrop-blur border border-white/5 rounded-2xl px-4 py-2 min-w-max gap-2">
+                    <span class="text-[10px] text-gray-500 uppercase tracking-widest font-black mr-1">SARALASH:</span>
+                    ${sortBtns}
+                </div>
             </div>
         </div>
 
