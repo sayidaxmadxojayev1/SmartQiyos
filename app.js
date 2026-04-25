@@ -1062,7 +1062,7 @@ async function renderProfile() {
             ${adminLink}
 
             <!-- ═══ MAIN USER CARD ═══ -->
-            <div class="relative w-full max-w-lg mx-auto rounded-[32px] border border-[#00ff88]/25 overflow-hidden"
+            <div class="relative w-[95%] sm:w-full max-w-lg mx-auto rounded-[32px] border border-[#00ff88]/25 overflow-hidden"
                  style="background: rgba(0,0,0,0.55); backdrop-filter: blur(18px); box-shadow: 0 0 40px rgba(0,255,136,0.08), 0 8px 32px rgba(0,0,0,0.5);">
 
                 <!-- Decorative top bar -->

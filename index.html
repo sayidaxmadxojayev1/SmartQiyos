@@ -153,7 +153,7 @@
 
         <!-- Products / Search Results View -->
         <div id="section-products" class="hidden">
-            <button onclick="resetHome()" class="mb-6 text-[#00ffcc] hover:underline flex items-center gap-2 font-bold"><i class="fas fa-arrow-left"></i> Orqaga qaytish</button>
+            <button onclick="resetHome()" class="mb-4 text-[#00ffcc] hover:text-white drop-shadow-[0_0_5px_rgba(0,255,204,0.5)] hover:drop-shadow-[0_0_15px_rgba(0,255,204,0.8)] inline-flex items-center gap-2 font-black text-lg sm:text-xl transition-all min-h-[44px] p-2 -ml-2 rounded-xl"><i class="fas fa-arrow-left"></i> Orqaga qaytish</button>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 min-[1600px]:grid-cols-5 gap-6 lg:gap-8" id="products-grid">
                 <!-- Dynamically via JS -->
             </div>
@@ -161,12 +161,14 @@
 
         <!-- Profile View -->
         <div id="section-profile" class="hidden">
+            <button onclick="showSection('home', 'navHome')" class="mb-6 mb-4 text-[#00ffcc] hover:text-white drop-shadow-[0_0_5px_rgba(0,255,204,0.5)] hover:drop-shadow-[0_0_15px_rgba(0,255,204,0.8)] inline-flex items-center gap-2 font-black text-lg sm:text-xl transition-all min-h-[44px] p-2 -ml-2 rounded-xl"><i class="fas fa-arrow-left"></i> Orqaga</button>
             <h2 class="text-3xl font-bold mb-10">Mening Profilim</h2>
             <div id="profile-container" class="grid grid-cols-1 gap-8 w-full max-w-4xl mx-auto"></div>
         </div>
 
         <!-- Favorites View -->
         <div id="section-favorites" class="hidden">
+            <button onclick="showSection('home', 'navHome')" class="mb-4 text-[#00ffcc] hover:text-white drop-shadow-[0_0_5px_rgba(0,255,204,0.5)] hover:drop-shadow-[0_0_15px_rgba(0,255,204,0.8)] inline-flex items-center gap-2 font-black text-lg sm:text-xl transition-all min-h-[44px] p-2 -ml-2 rounded-xl"><i class="fas fa-arrow-left"></i> Orqaga</button>
             <h2 class="text-3xl font-bold mb-10">Saqlanganlar</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 min-[1600px]:grid-cols-5 gap-6 lg:gap-8" id="favorites-grid">
                 <!-- Dynamic via JS -->
@@ -175,6 +177,7 @@
 
         <!-- Feedback & Support Chat -->
         <div id="section-feedback" class="hidden fade-in max-w-4xl mx-auto h-[70vh] flex flex-col bg-[#001a18] border border-[#01312b] rounded-[32px] overflow-hidden">
+            <button onclick="showSection('home', 'navHome')" class="mt-4 ml-6 mb-2 text-[#00ffcc] hover:text-white drop-shadow-[0_0_5px_rgba(0,255,204,0.5)] hover:drop-shadow-[0_0_15px_rgba(0,255,204,0.8)] inline-flex items-center gap-2 font-black text-lg sm:text-xl transition-all min-h-[44px] w-fit p-2 -ml-2 rounded-xl"><i class="fas fa-arrow-left"></i> Orqaga</button>
             <div class="border-b border-[#01312b] p-6 flex items-center bg-[#002320]">
                 <div class="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center text-white mr-4"><i class="fas fa-robot text-xl"></i></div>
                 <div>
@@ -197,13 +200,10 @@
         </div>
 
         <!-- Calculator View -->
-        <div id="section-kalkulyator" class="hidden fade-in max-w-2xl mx-auto py-10">
-            <div class="glass-sidebar rounded-[32px] p-8 border border-[#01312b] shadow-2xl relative">
-                <button id="calc-back-btn" onclick="resetHome()" class="absolute top-8 left-8 text-[#00ffcc] hover:text-white transition text-sm flex items-center gap-2 font-bold">
-                    <i class="fas fa-arrow-left"></i> Orqaga
-                </button>
-                
-                <div class="text-center mb-10">
+        <div id="section-kalkulyator" class="hidden fade-in max-w-2xl mx-auto py-10 w-[95%] sm:w-full">
+            <button onclick="showSection('home', 'navHome')" class="mb-4 text-[#00ffcc] hover:text-white drop-shadow-[0_0_5px_rgba(0,255,204,0.5)] hover:drop-shadow-[0_0_15px_rgba(0,255,204,0.8)] inline-flex items-center gap-2 font-black text-lg sm:text-xl transition-all min-h-[44px] p-2 -ml-2 rounded-xl"><i class="fas fa-arrow-left"></i> Orqaga</button>
+            <div class="glass-sidebar rounded-[32px] p-6 sm:p-8 border border-[#01312b] shadow-2xl relative">
+                <div class="text-center mb-10 mt-4">
                     <h2 class="text-2xl font-bold">Muddatli to'lov hisoblagichi</h2>
                     <p class="text-sm text-gray-500 mt-1">Oylik to'lovni oson darajada hisoblang</p>
                 </div>
@@ -289,8 +289,8 @@
             <!-- Header -->
             <div class="relative flex items-center justify-center mb-10 max-w-6xl mx-auto w-full">
                 <!-- Back Button (Left) -->
-                <button onclick="backToPrevStage()" id="catalog-back-btn" style="display:none" class="absolute left-0 bg-white/10 hover:bg-[#00ffcc] hover:text-black p-3 rounded-full transition w-12 h-12 items-center justify-center">
-                    <i class="fas fa-arrow-left text-xl"></i>
+                <button onclick="backToPrevStage()" id="catalog-back-btn" style="display:none;" class="absolute left-0 text-[#00ffcc] hover:text-white drop-shadow-[0_0_5px_rgba(0,255,204,0.5)] hover:drop-shadow-[0_0_15px_rgba(0,255,204,0.8)] transition-all min-h-[44px] min-w-[44px] rounded-xl flex items-center justify-center">
+                    <i class="fas fa-arrow-left text-2xl"></i>
                 </button>
                 <!-- Title (Center) -->
                 <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tighter" id="catalog-title">Katalog</h2>
@@ -317,8 +317,9 @@
         </div>
 
         <!-- Admin Panel Section -->
-        <div id="section-admin" class="hidden fade-in px-8">
+        <div id="section-admin" class="hidden fade-in px-4 sm:px-8">
             <div id="admin-sub-dashboard" class="admin-sub-section">
+                <button onclick="showSection('home', 'navHome')" class="lg:hidden mb-4 text-[#00ffcc] hover:text-white drop-shadow-[0_0_5px_rgba(0,255,204,0.5)] hover:drop-shadow-[0_0_15px_rgba(0,255,204,0.8)] inline-flex items-center gap-2 font-black text-lg sm:text-xl transition-all min-h-[44px] w-fit p-2 -ml-2 rounded-xl"><i class="fas fa-arrow-left"></i> Orqaga</button>
                 <div class="flex justify-between items-center mb-8">
                     <h2 class="text-3xl font-black tracking-tighter">Admin <span class="text-[#00ffcc]">Dashboard</span></h2>
                 </div>
