@@ -508,6 +508,101 @@ let currentUser = {
     phone: localStorage.getItem('smartqiyos_phone') || "+998 90 123 45 67"
 };
 
+// ===========================================
+// WEBSOCKET (SOCKET.IO) / MOCK INITIALIZATION
+// System lacks NPM, implementing BroadcastChannel for ZERO-DEPENDENCY Real-time cross-tab chat!
+// ===========================================
+let socket = null;
+const broadcastChannel = new BroadcastChannel('smartqiyos_chat');
+
+// Universal Event Dispatcher
+function emitChatEvent(eventName, payload) {
+    if (typeof io !== 'undefined' && socket) {
+        socket.emit(eventName, payload);
+    } else {
+        // Fallback to BroadcastChannel for local cross-tab Live Chat
+        broadcastChannel.postMessage({ type: eventName, data: payload });
+    }
+}
+
+// Receive Real-time Data
+broadcastChannel.onmessage = (event) => {
+    const { type, data } = event.data;
+    
+    // As USER receiving reply from ADMIN
+    if (type === 'admin_reply' && data.user_id === currentUser.userId) {
+        const chatBox = document.getElementById('chat-history');
+        if (chatBox) {
+            chatBox.innerHTML += `
+                <div class="flex mb-4 fade-in">
+                    <div class="bg-white/5 border border-white/10 text-white rounded-2xl rounded-tl-none px-6 py-4 max-w-[80%]">
+                        <span class="text-[10px] text-[#00ffcc] font-bold uppercase tracking-widest block mb-1">Yordam Markazi</span>
+                        ${data.text}
+                        <div class="text-left mt-2 text-xs text-gray-400 font-medium">${new Date().toLocaleTimeString('uz-UZ', {hour: '2-digit', minute:'2-digit'})}</div>
+                    </div>
+                </div>
+            `;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    }
+    
+    // As USER seeing their message was read
+    if (type === 'message_read_by_admin' && data === currentUser.userId) {
+        const unreadLabels = document.querySelectorAll('.msg-status-label');
+        unreadLabels.forEach(label => {
+            if (label.innerText.includes("Yuborildi")) {
+                label.innerHTML = `O'qildi <i class="fas fa-check-double ml-1"></i>`;
+                label.classList.remove('text-gray-400');
+                label.classList.add('text-[#00ffcc]', 'drop-shadow-[0_0_8px_rgba(0,255,204,0.8)]');
+            }
+        });
+    }
+
+    // As ADMIN receiving message from USER
+    if (type === 'send_message' && data.sender_type === 'user') {
+        const list = document.getElementById('admin-chat-list');
+        if (list) {
+            // Append user to chat list dynamically if not already active
+            const userCard = `
+                <div onclick="openAdminChat('${data.user_id}', 'Foydalanuvchi')" class="p-4 rounded-2xl bg-white/5 border border-[#00ffcc]/30 cursor-pointer hover:bg-white/10 transition-all flex items-center justify-between mb-2 fade-in">
+                    <div>
+                        <h4 class="font-bold text-sm text-[#00ffcc]">Yangi Xabar (Live)</h4>
+                        <p class="text-xs text-gray-400 font-mono mt-1">${data.user_id}</p>
+                        <p class="text-[10px] text-gray-500 mt-1 truncate max-w-[150px]">${data.text}</p>
+                    </div>
+                    <div class="w-3 h-3 bg-[#00ffcc] rounded-full shadow-[0_0_8px_#00ffcc] animate-pulse"></div>
+                </div>
+            `;
+            // Remove "Yuklanmoqda" 
+            if(list.innerHTML.includes("yuklanmoqda")) list.innerHTML = '';
+            list.innerHTML = userCard + list.innerHTML;
+        }
+
+        // If currently chatting with this user, append live text
+        if (activeAdminChatUser === data.user_id) {
+            const msgArea = document.getElementById('admin-chat-messages');
+            if (msgArea) {
+                msgArea.innerHTML += `
+                    <div class="flex mb-4 fade-in">
+                        <div class="bg-white/5 border border-white/10 text-white rounded-2xl rounded-tl-none px-6 py-4 max-w-[80%] border-l border-l-green-500 shadow-[0_0_15px_rgba(0,255,100,0.1)]">
+                            <span class="text-[10px] text-[#00ffcc] font-bold uppercase tracking-widest block mb-1">Mijoz</span>
+                            ${data.text}
+                            <div class="text-left mt-2 text-xs text-gray-500">${new Date().toLocaleTimeString('uz-UZ', {hour: '2-digit', minute:'2-digit'})}</div>
+                        </div>
+                    </div>
+                `;
+                msgArea.scrollTop = msgArea.scrollHeight;
+                emitChatEvent('mark_as_read', data.user_id); 
+            }
+        }
+    }
+    
+    // Admin reading trigger fallback update
+    if (type === 'mark_as_read') {
+        // (Just triggers cross-tab for user above)
+    }
+};
+
 // Mock Database
 let MOCK_USERS = [
     { id: "SQ-2099", fname: "Ali", lname: "Valiyev", phone: "+998 91 111 22 33", isVip: true, subEnd: "2026-05-10" },
@@ -858,13 +953,15 @@ function showAdminSubSection(subId) {
         users: 'adminNavUsers',
         payments: 'adminNavPay',
         stores: 'adminNavStores',
-        settings: 'adminNavSettings'
+        settings: 'adminNavSettings',
+        support: 'adminNavSupport'
     };
     if (btnMap[subId]) document.getElementById(btnMap[subId]).classList.add('active-admin-glow');
     
     if (subId === 'users') renderAdminPanel();
     if (subId === 'stores') renderAdminStores();
     if (subId === 'payments') renderAdminPayments();
+    if (subId === 'support') renderAdminSupport();
 }
 
 function renderAdminPayments() {
@@ -902,6 +999,106 @@ function renderAdminPayments() {
             </table>
         </div>
     `;
+}
+
+function renderAdminSupport() {
+    const section = document.getElementById('admin-sub-support');
+    if (!section) return;
+
+    section.innerHTML = `
+        <div class="flex h-full w-full">
+            <!-- Chat List Sidebar -->
+            <div class="w-1/3 border-r border-[#01312b] bg-black/20 flex flex-col">
+                <div class="p-6 border-b border-[#01312b]">
+                    <h2 class="text-2xl font-black tracking-tighter">Taklif va shikoyatlar</h2>
+                    <p class="text-xs text-gray-500 mt-1 uppercase tracking-widest font-bold">Murojaatlar qutisi</p>
+                </div>
+                <div id="admin-chat-list" class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-2">
+                    <p class="text-gray-500 text-center text-xs mt-10">Murojaatlar yuklanmoqda...</p>
+                </div>
+            </div>
+
+            <!-- Chat Window -->
+            <div class="flex-1 flex flex-col relative bg-[#001211]/50">
+                <div id="admin-chat-header" class="p-6 border-b border-[#01312b] bg-[#002320]/80 backdrop-blur-md flex items-center justify-between">
+                    <h3 class="text-lg font-bold text-gray-400">Chatni tanlang</h3>
+                </div>
+                
+                <div id="admin-chat-messages" class="flex-1 p-6 overflow-y-auto custom-scrollbar flex flex-col gap-4">
+                    <!-- Messages go here -->
+                </div>
+
+                <div class="p-4 bg-[#002320] border-t border-[#01312b] flex gap-4 items-center hidden" id="admin-chat-input-area">
+                    <input type="text" id="admin-chat-input" placeholder="Javob yozish..." class="flex-1 bg-black/40 border border-[#01312b] rounded-full py-4 px-6 focus:border-[#00ffcc] outline-none transition-all text-sm">
+                    <button id="admin-chat-send-btn" class="bg-[#00ffcc] text-[#001211] w-14 h-14 rounded-full font-black hover:shadow-[0_0_15px_#00ffcc] transition flex items-center justify-center">
+                        <i class="fas fa-paper-plane text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    if (socket && typeof socket.emit === 'function') {
+        socket.emit('join_admin_room');
+    }
+
+    fetchAdminChats();
+}
+
+function fetchAdminChats() {
+    const list = document.getElementById('admin-chat-list');
+    if (!list) return;
+
+    list.innerHTML = `
+        <div onclick="openAdminChat('SQ-2099', 'Ali Valiyev')" class="p-4 rounded-2xl bg-white/5 border border-[#00ffcc]/30 cursor-pointer hover:bg-white/10 transition-all flex items-center justify-between">
+            <div>
+                <h4 class="font-bold text-sm text-[#00ffcc]">Ali Valiyev</h4>
+                <p class="text-xs text-gray-400 font-mono mt-1">SQ-2099</p>
+                <p class="text-[10px] text-gray-500 mt-1 truncate max-w-[150px]">To'lov tizmi haqida savol...</p>
+            </div>
+            <div class="w-3 h-3 bg-red-500 rounded-full shadow-[0_0_8px_#ef4444]"></div>
+        </div>
+    `;
+}
+
+let activeAdminChatUser = null;
+function openAdminChat(userId, userName) {
+    activeAdminChatUser = userId;
+    document.getElementById('admin-chat-header').innerHTML = `<h3 class="text-lg font-bold text-white">${userName} <span class="text-xs text-gray-500 font-mono ml-2 border border-white/10 bg-black/30 px-2 py-1 rounded-full">${userId}</span></h3>`;
+    const msgArea = document.getElementById('admin-chat-messages');
+    
+    emitChatEvent('mark_as_read', userId); 
+
+    msgArea.innerHTML = `
+        <div class="flex mb-4">
+            <div class="bg-white/5 border border-white/10 text-white rounded-2xl rounded-tl-none px-6 py-4 max-w-[80%]">
+                <span class="text-[10px] text-[#00ffcc] font-bold uppercase tracking-widest block mb-1">Mijoz</span>
+                Assalomu alaykum! Saytdagi xatoni qanday to'g'irlash mumkin?
+                <div class="text-left mt-2 text-xs text-gray-500">11:00</div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('admin-chat-input-area').classList.remove('hidden');
+    
+    document.getElementById('admin-chat-send-btn').onclick = () => {
+        const input = document.getElementById('admin-chat-input');
+        const text = input.value.trim();
+        if(!text) return;
+        
+        msgArea.innerHTML += `
+            <div class="flex justify-end mb-4 fade-in">
+                <div class="bg-[#001a1a] border border-[#00ffcc]/30 text-white rounded-2xl rounded-tr-none px-6 py-3 max-w-[80%] relative shadow-[0_0_15px_rgba(0,255,204,0.05)]">
+                    ${text}
+                    <div class="text-right mt-1 text-xs text-gray-400 font-medium">${new Date().toLocaleTimeString('uz-UZ', {hour: '2-digit', minute:'2-digit'})} • Yuborildi</div>
+                </div>
+            </div>
+        `;
+        input.value = '';
+        msgArea.scrollTop = msgArea.scrollHeight;
+
+        emitChatEvent('send_message', { user_id: userId, sender_type: 'admin', text });
+    };
 }
 
 // 3. Search Logic
@@ -1228,20 +1425,32 @@ function saveProfileEdits() {
 
 function sendMessage() {
     const input = document.getElementById('chat-input');
-    const msg = input.value.trim();
-    if(!msg) return;
+    const text = input.value.trim();
+    if(!text) return;
     
     const chatBox = document.getElementById('chat-history');
+    const timeStr = new Date().toLocaleTimeString('uz-UZ', {hour: '2-digit', minute:'2-digit'});
+    
+    // UI - Yuborilgan xabarni ekranda chizish (Yuborildi - 1 check) bilan
     chatBox.innerHTML += `
         <div class="flex justify-end mb-4 fade-in">
-            <div class="bg-[#00ffcc]/10 border border-[#00ffcc]/30 text-white rounded-2xl rounded-tr-none px-6 py-3 max-w-[80%] relative">
-                ${msg}
-                <div class="text-right mt-1 text-xs text-[#00ffcc]">12:00 <i class="fas fa-check-double ml-1"></i></div>
+            <div class="bg-[#001a1a] border border-[#00ffcc]/30 text-white rounded-2xl rounded-tr-none px-6 py-3 max-w-[80%] relative shadow-[0_0_15px_rgba(0,255,204,0.05)]">
+                ${text}
+                <div class="text-right mt-1 text-xs text-gray-400 font-medium">
+                    ${timeStr} • <span class="msg-status-label transition-all">Yuborildi <i class="fas fa-check ml-1"></i></span>
+                </div>
             </div>
         </div>
     `;
     input.value = "";
     chatBox.scrollTop = chatBox.scrollHeight;
+
+    // Emit event manually (Universal Fallback)
+    emitChatEvent('send_message', {
+        user_id: currentUser.userId,
+        sender_type: 'user',
+        text: text
+    });
 }
 
 // OBUNA YO'NALTIRISH FUNKSIYASI

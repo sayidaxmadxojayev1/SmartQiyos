@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
 </head>
 <body class="bg-[#001211] bg-tech text-white flex h-screen overflow-hidden custom-scrollbar relative font-sans">
 
@@ -88,8 +89,12 @@
             <button onclick="showAdminSubSection('users')" id="adminNavUsers" class="admin-sidebar-btn w-full flex items-center px-6 py-4 rounded-2xl transition-all duration-300 text-gray-400 hover:text-[#00ffcc]">
                 <i class="fas fa-users mr-4 w-6"></i> Foydalanuvchilar
             </button>
-            <button onclick="showAdminSubSection('payments')" id="adminNavPay" class="admin-sidebar-btn w-full flex items-center px-6 py-4 rounded-2xl transition-all duration-300 text-gray-400 hover:text-[#00ffcc]">
+            <button onclick="showAdminSubSection('payments')" id="adminNavPay" class="admin-sidebar-btn w-full flex items-center px-6 py-4 rounded-2xl transition-all duration-300 text-gray-400 hover:text-[#00ffcc] relative">
                 <i class="fas fa-credit-card mr-4 w-6"></i> To'lovlar
+            </button>
+            <button onclick="showAdminSubSection('support')" id="adminNavSupport" class="admin-sidebar-btn w-full flex items-center px-6 py-4 rounded-2xl transition-all duration-300 text-gray-400 hover:text-[#00ffcc] relative">
+                <i class="fas fa-comments mr-4 w-6"></i> Xabarlar
+                <span id="admin-unread-badge" class="absolute right-4 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold hidden">0</span>
             </button>
             <button onclick="showAdminSubSection('stores')" id="adminNavStores" class="admin-sidebar-btn w-full flex items-center px-6 py-4 rounded-2xl transition-all duration-300 text-gray-400 hover:text-[#00ffcc]">
                 <i class="fas fa-store mr-4 w-6"></i> Do'konlar
@@ -201,7 +206,7 @@
 
         <!-- Calculator View -->
         <div id="section-kalkulyator" class="hidden fade-in max-w-2xl mx-auto py-10 w-[95%] sm:w-full">
-            <button onclick="showSection('home', 'navHome')" class="mb-4 text-[#00ffcc] hover:text-white drop-shadow-[0_0_5px_rgba(0,255,204,0.5)] hover:drop-shadow-[0_0_15px_rgba(0,255,204,0.8)] inline-flex items-center gap-2 font-black text-lg sm:text-xl transition-all min-h-[44px] p-2 -ml-2 rounded-xl"><i class="fas fa-arrow-left"></i> Orqaga</button>
+            <button id="calc-back-btn" onclick="showSection('home', 'navHome')" class="mb-4 text-[#00ffcc] hover:text-white drop-shadow-[0_0_5px_rgba(0,255,204,0.5)] hover:drop-shadow-[0_0_15px_rgba(0,255,204,0.8)] inline-flex items-center gap-2 font-black text-lg sm:text-xl transition-all min-h-[44px] p-2 -ml-2 rounded-xl"><i class="fas fa-arrow-left"></i> Orqaga</button>
             <div class="glass-sidebar rounded-[32px] p-6 sm:p-8 border border-[#01312b] shadow-2xl relative">
                 <div class="text-center mb-10 mt-4">
                     <h2 class="text-2xl font-bold">Muddatli to'lov hisoblagichi</h2>
@@ -284,37 +289,7 @@
             </div>
         </div>
 
-        <!-- Catalog Modal -->
-        <div id="catalog-modal" class="fixed inset-0 bg-black/95 backdrop-blur-2xl z-[200] hidden flex-col p-6 sm:p-10 overflow-y-auto fade-in">
-            <!-- Header -->
-            <div class="relative flex items-center justify-center mb-10 max-w-6xl mx-auto w-full">
-                <!-- Back Button (Left) -->
-                <button onclick="backToPrevStage()" id="catalog-back-btn" style="display:none;" class="absolute left-0 text-[#00ffcc] hover:text-white drop-shadow-[0_0_5px_rgba(0,255,204,0.5)] hover:drop-shadow-[0_0_15px_rgba(0,255,204,0.8)] transition-all min-h-[44px] min-w-[44px] rounded-xl flex items-center justify-center">
-                    <i class="fas fa-arrow-left text-2xl"></i>
-                </button>
-                <!-- Title (Center) -->
-                <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tighter" id="catalog-title">Katalog</h2>
-                <!-- Close Button (Right) -->
-                <button onclick="closeCatalog()" class="absolute right-0 text-3xl sm:text-4xl hover:text-red-500 transition-all">&times;</button>
-            </div>
 
-            <!-- Loading State -->
-            <div id="catalog-loading" class="hidden absolute inset-0 bg-[#001211]/80 backdrop-blur-md z-[210] flex items-center justify-center">
-                <div class="text-center">
-                    <div class="w-16 h-16 border-4 border-[#00ffcc] border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
-                    <p class="text-[#00ffcc] font-black uppercase tracking-widest animate-pulse">Narxlar yangilanmoqda...</p>
-                </div>
-            </div>
-
-            <div id="catalog-main" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto w-full">
-                <!-- Dynamic via JS -->
-            </div>
-            
-            <!-- Brands -->
-            <div id="sub-catalog" class="hidden grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto w-full">
-                <!-- Dynamic via JS -->
-            </div>
-        </div>
 
         <!-- Admin Panel Section -->
         <div id="section-admin" class="hidden fade-in px-4 sm:px-8">
@@ -394,6 +369,10 @@
 
             <div id="admin-sub-payments" class="admin-sub-section hidden">
                 <!-- Dynamic -->
+            </div>
+
+            <div id="admin-sub-support" class="admin-sub-section hidden h-[80vh] flex flex-col bg-[#001a18] border border-[#01312b] rounded-[32px] overflow-hidden shadow-2xl relative">
+                <!-- Dynamic Admin Chat -->
             </div>
 
             <div id="admin-sub-stores" class="admin-sub-section hidden">
@@ -481,6 +460,38 @@
         </div>
 
     </main>
+
+    <!-- Catalog Modal -->
+    <div id="catalog-modal" class="fixed inset-0 bg-black/95 backdrop-blur-2xl z-[200] hidden flex-col p-6 sm:p-10 overflow-y-auto fade-in">
+        <!-- Header -->
+        <div class="relative flex items-center justify-center mb-10 max-w-6xl mx-auto w-full">
+            <!-- Back Button (Left) -->
+            <button onclick="backToPrevStage()" id="catalog-back-btn" style="display:none;" class="absolute left-0 text-[#00ffcc] hover:text-white drop-shadow-[0_0_5px_rgba(0,255,204,0.5)] hover:drop-shadow-[0_0_15px_rgba(0,255,204,0.8)] transition-all min-h-[44px] min-w-[44px] rounded-xl flex items-center justify-center">
+                <i class="fas fa-arrow-left text-2xl"></i>
+            </button>
+            <!-- Title (Center) -->
+            <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tighter" id="catalog-title">Katalog</h2>
+            <!-- Close Button (Right) -->
+            <button onclick="closeCatalog()" class="absolute right-0 text-3xl sm:text-4xl hover:text-red-500 transition-all">&times;</button>
+        </div>
+
+        <!-- Loading State -->
+        <div id="catalog-loading" class="hidden absolute inset-0 bg-[#001211]/80 backdrop-blur-md z-[210] flex items-center justify-center">
+            <div class="text-center">
+                <div class="w-16 h-16 border-4 border-[#00ffcc] border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
+                <p class="text-[#00ffcc] font-black uppercase tracking-widest animate-pulse">Narxlar yangilanmoqda...</p>
+            </div>
+        </div>
+
+        <div id="catalog-main" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto w-full">
+            <!-- Dynamic via JS -->
+        </div>
+        
+        <!-- Brands -->
+        <div id="sub-catalog" class="hidden grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto w-full">
+            <!-- Dynamic via JS -->
+        </div>
+    </div>
 
     <!-- Admin Login Modal -->
     <div id="admin-login-modal" class="hidden fixed inset-0 z-[100] items-center justify-center bg-[#001211]/90 backdrop-blur-md p-4">

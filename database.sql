@@ -35,6 +35,16 @@ CREATE TABLE stores (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+-- 4. Real-time xabarlar (messages)
+CREATE TABLE messages (
+    message_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id VARCHAR(50) NOT NULL, -- Masalan: SQ-2099
+    sender_type ENUM('user', 'admin') DEFAULT 'user',
+    text TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Admin uchun foydali SQL buyruqlari (Sorgular):
 
 -- Foydalanuvchini VIP qilish (15 kunga):
