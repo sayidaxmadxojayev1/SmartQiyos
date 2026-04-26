@@ -312,7 +312,88 @@ io.on('connection', (socket) => {
 });
 
 // ==========================================
-// 6. Serverni ishga tushirish
+// 6. SMART XABARNOMALAR (SETTINGS & MONITORING)
+// ==========================================
+
+// 6.1. Xabarnoma sozlamalarini olish
+app.get('/api/notifications/settings/:userId', (req, res) => {
+    const userId = req.params.userId;
+    const sql = "SELECT * FROM notification_settings WHERE user_id_code = ?";
+    db.query(sql, [userId], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (results.length === 0) {
+            // Default sozlamalar
+            return res.json({ is_enabled: true, categories: "all", min_discount: 15 });
+        }
+        res.json(results[0]);
+    });
+});
+
+// 6.2. Xabarnoma sozlamalarini saqlash
+app.post('/api/notifications/settings', (req, res) => {
+    const { user_id_code, is_enabled, categories, min_discount } = req.body;
+    const sql = `
+        INSERT INTO notification_settings (user_id_code, is_enabled, categories, min_discount)
+        VALUES (?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE is_enabled = VALUES(is_enabled), categories = VALUES(categories), min_discount = VALUES(min_discount)
+    `;
+    db.query(sql, [user_id_code, is_enabled, categories, min_discount], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true });
+    });
+});
+
+// 6.3. Narxlar tarixini olish (Deals uchun)
+app.get('/api/notifications/deals', (req, res) => {
+    const sql = "SELECT * FROM price_history WHERE is_deal = TRUE ORDER BY recorded_at DESC LIMIT 20";
+    db.query(sql, (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(results);
+    });
+});
+
+// 6.4. MOCK PRICE MONITORING (Skaner simulatsiyasi)
+function runMockPriceCheck() {
+    console.log('🔍 Narxlar monitoringi skaneri ishga tushdi...');
+    
+    // Tasodifiy chegirmali mahsulot yaratish
+    const products = [
+        { name: "SADO erkaklar krossovkalari", old: 180000, new: 123000, store: "Uzum", cat: "clothing" },
+        { name: "Samsung Galaxy A55", old: 4500000, new: 3600000, store: "Olcha", cat: "electronics" },
+        { name: "MacBook Air M3", old: 16000000, new: 13500000, store: "Texnomart", cat: "electronics" }
+    ];
+
+    const item = products[Math.floor(Math.random() * products.length)];
+    const discountPercent = Math.round((1 - item.new / item.old) * 100);
+
+    if (discountPercent >= 15) {
+        const sql = "INSERT INTO price_history (product_name, store_name, price, is_deal) VALUES (?, ?, ?, TRUE)";
+        db.query(sql, [item.name, item.store, item.new], (err, res) => {
+            if (err) return console.error(err);
+
+            const deal = {
+                title: `Atigi ${item.new.toLocaleString()} so'mga ${item.name}`,
+                text: `${item.store} do'konida ${discountPercent}% chegirma!`,
+                product_name: item.name,
+                price: item.new,
+                store: item.store,
+                category: item.cat,
+                timestamp: new Date()
+            };
+
+            // Real-time Push (Simulation via Socket.io)
+            // Faqat online va sozlamalari mos foydalanuvchilarga yuborish
+            io.emit('smart_notification', deal);
+            console.log('🚀 Yangi aksiya topildi va xabarnoma yuborildi:', deal.title);
+        });
+    }
+}
+
+// 10 daqiqada bir marta tekshirish (Simulatsiya uchun 30 sekundda bir)
+setInterval(runMockPriceCheck, 30000);
+
+// ==========================================
+// 7. Serverni ishga tushirish
 // ==========================================
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {

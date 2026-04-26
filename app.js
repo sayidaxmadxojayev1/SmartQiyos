@@ -12,13 +12,13 @@ const STORES = [
     {
         id: 'olcha', name: 'Olcha.uz', rating: 4.8,
         brandColor: 'bg-[#00ffcc]', brandText: 'text-black',
-        banner: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426',
+        banner: 'assets/store_banner_olcha.png',
         terms: '3-24 oy', docs: 'Pasport/ID karta', url: 'https://olcha.uz'
     },
     {
         id: 'texnomart', name: 'Texnomart', rating: 4.9,
         brandColor: 'bg-[#ffcc00]', brandText: 'text-black',
-        banner: 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?q=80&w=2000',
+        banner: 'assets/store_banner_texnomart.png',
         terms: '12-24 oy', docs: 'Pasport va daromad', url: 'https://texnomart.uz'
     },
     {
@@ -30,13 +30,13 @@ const STORES = [
     {
         id: 'asaxiy', name: 'Asaxiy', rating: 4.8,
         brandColor: 'bg-[#1a56db]', brandText: 'text-white',
-        banner: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000',
+        banner: 'assets/store_banner_asaxiy.png',
         terms: '6-18 oy', docs: 'Faqat pasport', url: 'https://asaxiy.uz'
     },
     {
         id: 'alifshop', name: 'Alifshop', rating: 4.7,
         brandColor: 'bg-blue-500', brandText: 'text-white',
-        banner: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80',
+        banner: 'assets/store_banner_alifshop.png',
         terms: '6-24 oy', docs: 'Pasport/ID karta', url: 'https://alifshop.uz'
     },
     {
@@ -954,7 +954,8 @@ function showAdminSubSection(subId) {
         payments: 'adminNavPay',
         stores: 'adminNavStores',
         settings: 'adminNavSettings',
-        support: 'adminNavSupport'
+        support: 'adminNavSupport',
+        ai: 'adminNavAI'
     };
     if (btnMap[subId]) document.getElementById(btnMap[subId]).classList.add('active-admin-glow');
     
@@ -962,6 +963,31 @@ function showAdminSubSection(subId) {
     if (subId === 'stores') renderAdminStores();
     if (subId === 'payments') renderAdminPayments();
     if (subId === 'support') renderAdminSupport();
+    if (subId === 'ai') renderAdminAI();
+}
+
+function renderAdminAI() {
+    // Mock data for AI stats
+    document.getElementById('admin-ai-total-chats').innerText = Math.floor(Math.random() * 500 + 100);
+    document.getElementById('admin-ai-blocked-reqs').innerText = Math.floor(Math.random() * 100 + 20);
+    
+    // Load current greeting (first one by default)
+    const currentGreeting = "Salom! Men SmartQiyos yordamchisiman. Bugun kuningiz qanday o'tyapti?";
+    document.getElementById('admin-ai-greeting').value = currentGreeting;
+}
+
+function saveAISettings() {
+    const greeting = document.getElementById('admin-ai-greeting').value;
+    const rate = document.getElementById('admin-ai-rate').value;
+    const volume = document.getElementById('admin-ai-volume').value;
+
+    console.log('🛡️ AI Sozlamalari saqlandi:', { greeting, rate, volume });
+    
+    // In a real app, this would be a fetch() call
+    alert("AI sozlamalari muvaffaqiyatli saqlandi!");
+    
+    // Locally update AI params if possible
+    // (Actual speech synthesis params can be updated here)
 }
 
 function renderAdminPayments() {
@@ -1252,13 +1278,62 @@ async function renderProfile() {
     ` : '';
 
     const vipExpiry = currentUser.subEnd && currentUser.subEnd !== 'N/A' ? currentUser.subEnd : null;
+    
+    // Load notification settings after profile data is ready
+    setTimeout(loadNotifSettings, 0);
 
     container.innerHTML = `
         <div class="flex flex-col items-center justify-center min-h-[60vh] py-8 fade-in">
 
             ${adminLink}
 
-            <!-- ═══ MAIN USER CARD ═══ -->
+                    <!-- Smart Notifications Section -->
+                    <div class="w-full mt-6 p-6 rounded-[28px] border border-[#00ffcc]/20 bg-black/40 text-left fade-in">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-[#00ffcc]/10 flex items-center justify-center">
+                                    <i class="fas fa-bell text-[#00ffcc] animate-pulse"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-black text-sm uppercase tracking-widest">Smart Xabarnomalar</h4>
+                                    <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Real-vaqt monitoring</p>
+                                </div>
+                            </div>
+                            <!-- Toggle Switch -->
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="notif-toggle" class="sr-only peer" onchange="updateNotifSettings()">
+                                <div class="w-14 h-7 bg-white/5 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:start-[4px] after:bg-gray-500 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-6 after:transition-all peer-checked:bg-[#00ffcc]/20 peer-checked:after:bg-[#00ffcc]"></div>
+                            </label>
+                        </div>
+
+                        <div id="notif-details" class="space-y-5 transition-all duration-500">
+                            <!-- Category Filter -->
+                            <div>
+                                <label class="text-[10px] uppercase tracking-widest text-gray-500 font-black block mb-3">Kategoriyalar bo'yicha filtr</label>
+                                <div class="flex flex-wrap gap-2">
+                                    <button onclick="toggleNotifCat('electronics')" id="notif-cat-electronics" class="notif-cat-btn px-4 py-2 rounded-xl border border-white/5 bg-white/5 text-[10px] font-black uppercase tracking-wider transition-all">Elektronika</button>
+                                    <button onclick="toggleNotifCat('clothing')" id="notif-cat-clothing" class="notif-cat-btn px-4 py-2 rounded-xl border border-white/5 bg-white/5 text-[10px] font-black uppercase tracking-wider transition-all">Kiyim-kechak</button>
+                                    <button onclick="toggleNotifCat('home')" id="notif-cat-home" class="notif-cat-btn px-4 py-2 rounded-xl border border-white/5 bg-white/5 text-[10px] font-black uppercase tracking-wider transition-all">Maishiy texnika</button>
+                                </div>
+                            </div>
+
+                            <!-- Discount Slider -->
+                            <div>
+                                <div class="flex justify-between items-center mb-3">
+                                    <label class="text-[10px] uppercase tracking-widest text-gray-500 font-black block">Minimal chegirma</label>
+                                    <span id="notif-discount-val" class="text-[#00ffcc] font-black text-sm">15%</span>
+                                </div>
+                                <input type="range" id="notif-discount-range" min="5" max="50" step="5" value="15" 
+                                       oninput="document.getElementById('notif-discount-val').innerText = this.value + '%'; updateNotifSettings()"
+                                       class="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#00ffcc]">
+                                <div class="flex justify-between text-[8px] text-gray-600 font-bold uppercase tracking-widest mt-2">
+                                    <span>5%</span>
+                                    <span>25%</span>
+                                    <span>50%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
             <div class="relative w-[95%] sm:w-full max-w-lg mx-auto rounded-[32px] border border-[#00ff88]/25 overflow-hidden"
                  style="background: rgba(0,0,0,0.55); backdrop-filter: blur(18px); box-shadow: 0 0 40px rgba(0,255,136,0.08), 0 8px 32px rgba(0,0,0,0.5);">
 
@@ -1827,9 +1902,9 @@ function openCatalog() {
 }
 
 function closeCatalog() { 
+    catalogStage = 0;
     document.getElementById('catalog-modal').classList.remove('flex'); 
     document.getElementById('catalog-modal').classList.add('hidden'); 
-    catalogStage = 0;
 }
 
 function renderCatalogCategories() {
@@ -1840,28 +1915,26 @@ function renderCatalogCategories() {
     document.getElementById('sub-catalog').classList.add('hidden');
     document.getElementById('catalog-loading').classList.add('hidden');
 
-    document.getElementById('catalog-main').innerHTML = CATEGORIES.map(c => `
-        <div onclick="openSubCatalog('${c.id}')" class="catalog-card group relative overflow-hidden rounded-[32px] cursor-pointer transition-all hover:scale-[1.02] active:scale-95 border border-white/5 hover:border-[#00ffcc]/30 shadow-2xl">
-            <div class="absolute inset-0 bg-gradient-to-br ${c.color} opacity-80 group-hover:opacity-100 transition-opacity"></div>
-            <div class="relative p-8 h-48 flex flex-col justify-between">
-                <div class="w-12 h-12 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center text-white text-xl">
-                    <i class="${c.icon}"></i>
-                </div>
-                <div>
-                    <h3 class="text-xl font-black text-white leading-tight">${c.name}</h3>
-                    <p class="text-xs text-white/60 font-bold mt-1">${c.count} bo'limlar</p>
-                </div>
-            </div>
-            <img src="${c.img}" class="absolute right-0 bottom-0 w-32 h-32 object-cover opacity-30 group-hover:opacity-50 transition-all transform translate-x-4 translate-y-4 group-hover:translate-x-0 group-hover:translate-y-0 rotate-12">
-        </div>
-    `).join('');
-
     document.getElementById('catalog-main').innerHTML = `
             <div class="col-span-full">
                 <h3 class="text-xl font-bold bg-black/40 inline-block px-4 py-2 rounded-xl border border-white/5 shadow-xl mb-4">Mahsulot toifalari</h3>
             </div>
             <div class="col-span-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 min-[1600px]:grid-cols-6 gap-6 px-2">
-                ${catsHTML}
+                ${CATEGORIES.map(c => `
+                    <div onclick="openSubCatalog('${c.id}')" class="catalog-card group relative overflow-hidden rounded-[32px] cursor-pointer transition-all hover:scale-[1.02] active:scale-95 border border-white/5 hover:border-[#00ffcc]/30 shadow-2xl">
+                        <div class="absolute inset-0 bg-gradient-to-br ${c.color} opacity-80 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="relative p-8 h-48 flex flex-col justify-between">
+                            <div class="w-12 h-12 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center text-white text-xl">
+                                <i class="${c.icon}"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-black text-white leading-tight">${c.name}</h3>
+                                <p class="text-xs text-white/60 font-bold mt-1">${c.count} bo'limlar</p>
+                            </div>
+                        </div>
+                        <img src="${c.img}" class="absolute right-0 bottom-0 w-32 h-32 object-cover opacity-30 group-hover:opacity-50 transition-all transform translate-x-4 translate-y-4 group-hover:translate-x-0 group-hover:translate-y-0 rotate-12">
+                    </div>
+                `).join('')}
             </div>
         `;
 }
@@ -2262,5 +2335,481 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check URL for admin-login
     if (window.location.hash === '#admin-login') {
         handleAdminLogin();
+    }
+
+    // Initialize SmartQiyos AI
+    setTimeout(initAIAssistant, 1500); 
+});
+
+// ==========================================
+// SMART NOTIFICATIONS LOGIC
+// ==========================================
+
+let currentNotifSettings = {
+    is_enabled: true,
+    categories: ['electronics', 'clothing', 'home'],
+    min_discount: 15
+};
+
+async function loadNotifSettings() {
+    if (!currentUser.userId) return;
+    try {
+        const res = await fetch(`/api/notifications/settings/${currentUser.userId}`);
+        const data = await res.json();
+        if (data && !data.error) {
+            currentNotifSettings.is_enabled = data.is_enabled;
+            currentNotifSettings.min_discount = data.min_discount;
+            currentNotifSettings.categories = data.categories === 'all' ? ['electronics', 'clothing', 'home'] : data.categories.split(',');
+            applyNotifSettingsToUI();
+        }
+    } catch (e) {
+        console.error("Notif settings load error:", e);
+    }
+}
+
+function applyNotifSettingsToUI() {
+    const toggle = document.getElementById('notif-toggle');
+    const range = document.getElementById('notif-discount-range');
+    const val = document.getElementById('notif-discount-val');
+    const details = document.getElementById('notif-details');
+
+    if (toggle) toggle.checked = currentNotifSettings.is_enabled;
+    if (range) range.value = currentNotifSettings.min_discount;
+    if (val) val.innerText = currentNotifSettings.min_discount + '%';
+    if (details) details.style.opacity = currentNotifSettings.is_enabled ? '1' : '0.3';
+
+    // Update cat buttons
+    ['electronics', 'clothing', 'home'].forEach(cat => {
+        const btn = document.getElementById(`notif-cat-${cat}`);
+        if (btn) {
+            if (currentNotifSettings.categories.includes(cat)) {
+                btn.classList.add('bg-[#00ffcc]', 'text-black', 'border-transparent');
+                btn.classList.remove('bg-white/5', 'text-gray-400');
+            } else {
+                btn.classList.remove('bg-[#00ffcc]', 'text-black', 'border-transparent');
+                btn.classList.add('bg-white/5', 'text-gray-400');
+            }
+        }
+    });
+}
+
+function toggleNotifCat(cat) {
+    if (currentNotifSettings.categories.includes(cat)) {
+        currentNotifSettings.categories = currentNotifSettings.categories.filter(c => c !== cat);
+    } else {
+        currentNotifSettings.categories.push(cat);
+    }
+    applyNotifSettingsToUI();
+    updateNotifSettings();
+}
+
+async function updateNotifSettings() {
+    const toggle = document.getElementById('notif-toggle');
+    const range = document.getElementById('notif-discount-range');
+    
+    currentNotifSettings.is_enabled = toggle ? toggle.checked : currentNotifSettings.is_enabled;
+    currentNotifSettings.min_discount = range ? parseInt(range.value) : currentNotifSettings.min_discount;
+
+    applyNotifSettingsToUI();
+
+    if (!currentUser.userId) return;
+
+    try {
+        await fetch('/api/notifications/settings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_id_code: currentUser.userId,
+                is_enabled: currentNotifSettings.is_enabled,
+                categories: currentNotifSettings.categories.join(','),
+                min_discount: currentNotifSettings.min_discount
+            })
+        });
+    } catch (e) {
+        console.error("Notif settings save error:", e);
+    }
+}
+
+// Socket.io integration for Smart Notifications
+if (typeof socket !== 'undefined') {
+    socket.on('smart_notification', (deal) => {
+        if (!currentNotifSettings || !currentNotifSettings.is_enabled) return;
+        if (currentNotifSettings.categories && currentNotifSettings.categories.length > 0 && !currentNotifSettings.categories.includes(deal.category)) return;
+        
+        showSmartNotification(deal);
+    });
+}
+
+function showSmartNotification(deal) {
+    console.log('🔔 Xabarnoma ko\'rsatilmoqda:', deal.title);
+    // Check if notification element exists, if not create it
+    let container = document.getElementById('push-notif-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'push-notif-container';
+        container.className = 'fixed top-10 left-1/2 -translate-x-1/2 z-[1000] w-[90%] max-w-sm pointer-events-none';
+        document.body.appendChild(container);
+    }
+
+    const notif = document.createElement('div');
+    notif.className = 'bg-white rounded-[24px] p-5 shadow-2xl flex items-center gap-4 border border-gray-200 transform translate-y-[-20px] opacity-0 transition-all duration-500 pointer-events-auto cursor-pointer mb-4';
+    notif.innerHTML = `
+        <div class="w-12 h-12 bg-[#6200EE] rounded-2xl flex items-center justify-center text-white flex-shrink-0 shadow-lg shadow-indigo-200">
+            <i class="fas fa-power-off text-xl"></i>
+        </div>
+        <div class="flex-1 overflow-hidden text-left">
+            <div class="flex items-center gap-2 mb-0.5">
+                <h5 class="text-xs font-bold text-gray-900 truncate">${deal.title}</h5>
+                <span class="text-[9px] text-gray-400 font-mono whitespace-nowrap">• HOZIR</span>
+            </div>
+            <p class="text-[10px] text-gray-500 truncate leading-tight">${deal.text}</p>
+        </div>
+        <button class="text-gray-400 p-2 hover:bg-gray-100 rounded-full transition">
+            <i class="fas fa-chevron-down text-xs"></i>
+        </button>
+    `;
+
+    notif.onclick = () => {
+        notif.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            showSection('home', 'navHome');
+            notif.remove();
+        }, 200);
+    };
+
+    container.appendChild(notif);
+
+    // Animate in
+    setTimeout(() => {
+        notif.style.transform = 'translateY(0)';
+        notif.style.opacity = '1';
+    }, 10);
+
+    // Auto remove after 8 seconds
+    setTimeout(() => {
+        if (notif.parentElement) {
+            notif.style.opacity = '0';
+            notif.style.transform = 'translateY(-20px)';
+            setTimeout(() => notif.remove(), 500);
+        }
+    }, 8000);
+}
+
+// WebSocket simulation for restricted environments (demo mode)
+if (typeof socket === 'undefined' || (socket && !socket.connected)) {
+    console.log('💡 Demo rejimida: Mahalliy xabarnomalar simulyatsiyasi yoqildi.');
+    setInterval(() => {
+        if (!currentNotifSettings || !currentNotifSettings.is_enabled) return;
+        
+        const products = [
+            { title: "Atigi 123.000 so'mga SADO...", text: "SADO krossovkalariga 32% chegirma topildi!", category: "clothing" },
+            { title: "Smart Narx: iPhone 15 Pro", text: "Olcha.uz da narx 1.2 mln so'mga arzonlashdi!", category: "electronics" },
+            { title: "Aksiya: Samsung Galaxy A55", text: "Texnomartda bugun maxsus narx!", category: "electronics" }
+        ];
+        
+        const deal = products[Math.floor(Math.random() * products.length)];
+        if (currentNotifSettings.categories && currentNotifSettings.categories.length > 0 && !currentNotifSettings.categories.includes(deal.category)) return;
+        
+        showSmartNotification(deal);
+    }, 10000); // Har 10 soniyada (Tekshirish uchun tezlashtirildi)
+}
+// ==========================================
+// SMARTQIYOS VOICE AI LOGIC
+// ==========================================
+
+let isAISpeaking = false;
+let isAIListening = false;
+let aiRecognition;
+
+function initAIAssistant() {
+    console.log('🤖 SmartQiyos AI (EVE) faollashmoqda...');
+    const wrapper = document.getElementById('ai-assistant-wrapper');
+    const sphere = document.getElementById('ai-neuron-sphere');
+
+    if (!wrapper) return;
+
+    // Phase 1: Greeting Animation
+    gsap.to(wrapper, { opacity: 1, duration: 0.5 });
+    gsap.fromTo(sphere, { scale: 0 }, { scale: 1.2, duration: 1.5, ease: "back.out" });
+    
+    setTimeout(() => {
+        const greetings = [
+            "Salom! Men SmartQiyos yordamchisiman. Bugun kuningiz qanday o'tyapti?",
+            "Xush kelibsiz! Men SmartQiyos AI yordamchisiman. Sog'liqlaringiz yaxshimi?",
+            "Assalomu alaykum! SmartQiyos platformasida sizni ko'rganimdan xursandman. Kayfiyatlar qalay?"
+        ];
+        const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
+        
+        showAIDialogue(randomGreeting + " Mijoz (Ovozli gaplashish uchun ustimga bosing)");
+        // Removed auto-speakAI here to prevent browser blocking without user interaction.
+        
+        // Auto-hide dialogue after greeting
+        setTimeout(hideAIDialogue, 6000);
+    }, 2000);
+
+    // Attach click handler — speak first (required by browser autoplay policy), then listen
+    if (sphere) sphere.onclick = () => {
+        const greetings = [
+            "Salom! Men SmartQiyos AI yordamchisiman. Sizga qanday yordam bera olaman?",
+            "Ha, tinglayapman! Savol bering.",
+            "Xush kelibsiz! Qanday yordam kerak?"
+        ];
+        const msg = greetings[Math.floor(Math.random() * greetings.length)];
+        showAIDialogue(msg);
+        speakAI(msg);
+        // After speaking, start listening
+        const spokenUtterance = window.currentAIUtterance;
+        if (spokenUtterance) {
+            spokenUtterance.onend = () => {
+                isAISpeaking = false;
+                const wrapper = document.getElementById('ai-assistant-wrapper');
+                if (wrapper) wrapper.classList.remove('is-active');
+                startAIListening();
+            };
+        } else {
+            setTimeout(startAIListening, 2000);
+        }
+    };
+}
+
+function showAIDialogue(text) {
+    const dialogue = document.getElementById('ai-dialogue-eve');
+    const aiText = document.getElementById('ai-text-eve');
+    if (dialogue && aiText) {
+        aiText.innerText = text;
+        dialogue.classList.add('show');
+    }
+}
+
+function hideAIDialogue() {
+    const dialogue = document.getElementById('ai-dialogue-eve');
+    if (dialogue) {
+        dialogue.classList.remove('show');
+    }
+}
+
+// ─────────────────────────────────────────────────
+// Helper: Get voices (async – Chrome loads them late)
+// ─────────────────────────────────────────────────
+function getVoicesAsync() {
+    return new Promise(resolve => {
+        const voices = window.speechSynthesis.getVoices();
+        if (voices && voices.length > 0) {
+            resolve(voices);
+        } else {
+            // Wait for voiceschanged event (fires once voices are ready)
+            window.speechSynthesis.addEventListener('voiceschanged', function handler() {
+                window.speechSynthesis.removeEventListener('voiceschanged', handler);
+                resolve(window.speechSynthesis.getVoices());
+            });
+            // Safety timeout – if event never fires, resolve with empty array
+            setTimeout(() => resolve([]), 2000);
+        }
+    });
+}
+
+async function speakAI(text) {
+    if (!('speechSynthesis' in window)) {
+        console.warn('❌ speechSynthesis not supported');
+        return;
+    }
+
+    const wrapper = document.getElementById('ai-assistant-wrapper');
+
+    // Cancel only if already speaking
+    if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+        await new Promise(r => setTimeout(r, 150)); // small gap after cancel
+    }
+
+    if (wrapper) wrapper.classList.add('is-active');
+    isAISpeaking = true;
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    window.currentAIUtterance = utterance; // Prevent Chrome GC
+
+    // Async voice selection
+    const voices = await getVoicesAsync();
+    console.log('🗣️ Available voices:', voices.length);
+
+    const preferred = [
+        voices.find(v => v.lang.startsWith('uz')),
+        voices.find(v => v.lang.startsWith('ru')),
+        voices.find(v => v.default),
+        voices[0]
+    ].find(Boolean);
+
+    if (preferred) {
+        utterance.voice = preferred;
+        utterance.lang  = preferred.lang;
+        console.log('🗣️ Using voice:', preferred.name, preferred.lang);
+    } else {
+        utterance.lang = 'ru-RU'; // Most common non-English Windows voice
+        console.warn('⚠️ No voice found, using lang only');
+    }
+
+    utterance.volume = 1.0;
+    utterance.rate   = 0.95;
+    utterance.pitch  = 1.1;
+
+    utterance.onstart = () => console.log('🔊 Speaking started');
+    utterance.onend   = () => {
+        console.log('✅ Speaking done');
+        isAISpeaking = false;
+        if (wrapper) wrapper.classList.remove('is-active');
+    };
+    utterance.onerror = e => {
+        console.error('❌ TTS Error:', e.error);
+        isAISpeaking = false;
+        if (wrapper) wrapper.classList.remove('is-active');
+    };
+
+    window.speechSynthesis.resume();
+    window.speechSynthesis.speak(utterance);
+    console.log('▶️ speak() called with:', text.slice(0, 40));
+}
+
+// Ensure speech engine is "woken up" on first user interaction
+document.addEventListener('click', () => {
+    if (window.speechSynthesis && window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+    }
+}, { once: true });
+
+// Listen for voiceschanged to ensure voices are ready
+if (window.speechSynthesis) {
+    window.speechSynthesis.onvoiceschanged = () => {
+        console.log('🗣️ AI Ovozlar yangilandi:', window.speechSynthesis.getVoices().length);
+    };
+}
+
+function startAIListening() {
+    const wrapper = document.getElementById('ai-assistant-wrapper');
+    if (!('webkitSpeechRecognition' in window)) {
+        alert("Brauzeringiz ovozni aniqlashni qo'llab-quvvatlamaydi.");
+        return;
+    }
+
+    if (isAIListening) return;
+
+    aiRecognition = new webkitSpeechRecognition();
+    aiRecognition.lang = 'uz-UZ';
+    aiRecognition.interimResults = false;
+    aiRecognition.maxAlternatives = 1;
+
+    aiRecognition.onstart = () => {
+        isAIListening = true;
+        showAIDialogue("Sizni eshityapman...");
+        if (wrapper) wrapper.classList.add('is-active');
+    };
+
+    aiRecognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        console.log('🎤 AI eshitdi:', transcript);
+        handleAIQuery(transcript);
+    };
+
+    aiRecognition.onerror = (event) => {
+        console.error('STT Error:', event.error);
+        if (event.error === 'not-allowed') {
+            showAIDialogue("Mikrofonga ruxsat berilmadi! Iltimos, brauzer sozlamalaridan ruxsat bering.");
+            speakAI("Mikrofonga ruxsat yopiq.");
+        } else if (event.error === 'network') {
+            showAIDialogue("Tarmoq xatosi. Ovoz aniqlash imkonsiz.");
+        } else {
+            showAIDialogue("Kechirasiz, sizni yaxshi eshitmadim.");
+            speakAI("Kechirasiz, eshitmadim.");
+        }
+        stopAIListening();
+    };
+
+    aiRecognition.onend = () => {
+        stopAIListening();
+    };
+
+    aiRecognition.start();
+}
+
+function stopAIListening() {
+    const wrapper = document.getElementById('ai-assistant-wrapper');
+    isAIListening = false;
+    if (wrapper && !isAISpeaking) wrapper.classList.remove('is-active');
+    setTimeout(hideAIDialogue, 2000);
+}
+
+function handleAIQuery(query) {
+    const q = query.toLowerCase();
+    let response = "";
+
+    // Analytical detection (Premium check)
+    const analyticalKeywords = ['narx', 'qancha', 'qayerda', 'arzon', 'do\'kon', 'sotib olish', 'iphone', 'samsung', 'qidirish'];
+    const isAnalytical = analyticalKeywords.some(key => q.includes(key));
+
+    if (isAnalytical && !currentUser.isVip) {
+        response = "Ushbu ma'lumotlarni tahlil qilishim uchun 'Premium' obuna kerak. @SAYDJAMOLG4S orqali faollashtirishingiz mumkin.";
+        showAIDialogue(response);
+        speakAI(response);
+        return;
+    }
+
+    // Conversational logic (Free Tier)
+    if (q.includes('salom') || q.includes('assalom')) {
+        response = "Salom! Sizga yana qanday yordam bera olaman?";
+    } else if (q.includes('qalay') || q.includes('nima gap') || q.includes('yaxshimi')) {
+        response = "Rahmat, hammasi yaxshi. Sizning ishlaringiz qalay? Charchamayapsizmi?";
+    } else if (q.includes('kimsa') || q.includes('nima qilasan')) {
+        response = "Men SmartQiyos platformasining aqlli AI yordamchisiman. Sizga eng yaxshi narxlarni topishda va saytdan foydalanishda yordam beraman.";
+    } else {
+        response = "Tushunarli. Agar 'Premium' obunangiz bo'lsa, men sizga mahsulotlar narxini ham tahlil qilib beraman.";
+    }
+
+    showAIDialogue(response);
+    speakAI(response);
+}
+
+// ==========================================
+// INITIALIZATION
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 SmartQiyos initializing...');
+    renderStores();
+    initAIAssistant();
+    updatePageTitle();
+
+    // =============================================
+    // EVE AUTO-GREETING (sessiyada bir marta)
+    // =============================================
+    const alreadyGreeted = sessionStorage.getItem('eve_greeted');
+
+    if (!alreadyGreeted) {
+        setTimeout(() => {
+            const greetings = {
+                uz: [
+                    "Assalomu alaykum! Men Eva. Sizga qanday yordam bera olaman?",
+                    "Xush kelibsiz! SmartQiyos'da eng yaxshi narxlarni toping.",
+                    "Salom! Mahsulot narxlarini solishtirish uchun men bilan gaplashing."
+                ],
+                ru: [
+                    "Здравствуйте! Я Ева. Чем могу помочь?",
+                    "Добро пожаловать! Найдите лучшие цены на SmartQiyos.",
+                    "Привет! Спросите меня о ценах на товары."
+                ],
+                en: [
+                    "Hello! I'm Eve. How can I help you today?",
+                    "Welcome to SmartQiyos! Find the best prices here.",
+                    "Hi there! Ask me about product prices."
+                ]
+            };
+            const lang = currentLang || 'uz';
+            const msgs = greetings[lang] || greetings['uz'];
+            const msg = msgs[Math.floor(Math.random() * msgs.length)];
+
+            showAIDialogue(msg);
+            // Auto-hide after 7 seconds
+            setTimeout(hideAIDialogue, 7000);
+
+            // Mark as greeted for this session
+            sessionStorage.setItem('eve_greeted', 'true');
+        }, 1500); // 1.5 seconds after load
     }
 });

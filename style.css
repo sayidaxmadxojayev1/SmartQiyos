@@ -434,3 +434,212 @@
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 }
+
+/* ?? EVE-STYLE AI ROBOT */
+#ai-assistant-wrapper {
+    position: fixed;
+    top: 90px;      /* Moved down 70px extra to avoid overlapping UZ|RU|EN panel */
+    right: 20px;
+    z-index: 500;   /* Below header z-index so dropdowns appear on top */
+    pointer-events: none;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+/* On mobile, move to bottom-right so it doesn't block anything at the top */
+@media (max-width: 768px) {
+    #ai-assistant-wrapper {
+        top: auto;
+        bottom: 90px; /* Above the mobile bottom nav bar */
+        right: 15px;
+    }
+}
+
+#ai-sphere-container {
+    pointer-events: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.eve-robot {
+    width: 65px;
+    height: 85px;
+    background: #ffffff;
+    border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
+    position: relative;
+    box-shadow: inset -5px -5px 15px rgba(0,0,0,0.1), 
+                0 0 30px rgba(255,255,255,0.2),
+                0 10px 20px rgba(0,0,0,0.2);
+    animation: eveFloat 4s ease-in-out infinite;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255,255,255,0.8);
+    display: flex;
+    justify-content: center;
+}
+
+.eve-robot::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 15%;
+    width: 25%;
+    height: 15%;
+    background: rgba(255,255,255,0.8);
+    border-radius: 50%;
+    filter: blur(2px);
+}
+
+.eve-face {
+    position: absolute;
+    top: 18px;
+    width: 45px;
+    height: 28px;
+    background: #080808;
+    border-radius: 50% / 60% 60% 40% 40%;
+    overflow: hidden;
+    box-shadow: inset 0 2px 8px rgba(0,255,204,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.eve-eyes {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    padding: 0 6px;
+}
+
+.eve-eye {
+    width: 14px;
+    height: 4px;
+    background: #0088ff;
+    border-radius: 2px;
+    box-shadow: 0 0 10px #0088ff, 0 0 20px #00ffff;
+    transition: all 0.3s ease;
+    animation: eveBlink 6s infinite;
+}
+
+.is-active .eve-eye {
+    height: 6px;
+    background: #00ffcc;
+    box-shadow: 0 0 15px #00ffcc, 0 0 25px #00ffff;
+}
+
+.eve-status-rings {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.is-active .eve-status-rings {
+    opacity: 1;
+}
+
+.status-ring {
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(0, 255, 204, 0.4);
+    border-radius: 50%;
+    animation: ringRotate 4s linear infinite;
+}
+
+.status-ring:nth-child(2) {
+    inset: 15px;
+    border-color: rgba(0, 255, 255, 0.3);
+    animation-duration: 6s;
+    animation-direction: reverse;
+}
+
+@keyframes eveFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-12px) rotate(2deg); }
+}
+
+@keyframes eveBlink {
+    0%, 96%, 100% { transform: scaleY(1); }
+    98% { transform: scaleY(0); }
+}
+
+@keyframes ringRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.status-panel-eve {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-end;
+    margin-top: 10px;
+}
+
+.status-msg {
+    background: rgba(255, 0, 85, 0.9);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 5px 15px rgba(255, 0, 85, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transform: translateX(20px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.is-active .status-msg {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.status-msg-alt {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: rgba(0, 255, 204, 0.3);
+    color: #00ffcc;
+    transition-delay: 0.1s;
+}
+
+#ai-dialogue-eve {
+    position: absolute;
+    right: 80px;
+    top: 10px;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 204, 0.3);
+    padding: 12px 20px;
+    border-radius: 20px 20px 0 20px;
+    max-width: 250px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px) scale(0.9);
+    transition: all 0.4s ease;
+}
+
+#ai-dialogue-eve.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+#ai-text-eve {
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    line-height: 1.4;
+}

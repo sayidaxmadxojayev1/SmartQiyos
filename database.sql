@@ -57,3 +57,23 @@ CREATE TABLE messages (
 -- Muddati tugagan VIP'larni avtomatik aniqlash:
 -- SELECT * FROM users 
 -- WHERE is_vip = TRUE AND vip_end_date < NOW();
+-- 5. Xabarnoma sozlamalari (notification_settings)
+CREATE TABLE notification_settings (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id_code VARCHAR(20) UNIQUE,
+    is_enabled BOOLEAN DEFAULT TRUE,
+    categories TEXT, -- "electronics,clothing" kabi vergul bilan ajratilgan
+    min_discount INT DEFAULT 15, -- Minimal chegirma foizi
+    last_notified TIMESTAMP NULL,
+    FOREIGN KEY (user_id_code) REFERENCES users(user_id_code)
+);
+
+-- 6. Narxlar tarixi (price_history)
+CREATE TABLE price_history (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    product_name VARCHAR(255),
+    store_name VARCHAR(100),
+    price DECIMAL(15, 2),
+    is_deal BOOLEAN DEFAULT FALSE, -- 15% dan ortiq tushganmi?
+    recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
