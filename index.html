@@ -83,6 +83,23 @@
             <!-- Dialogue Bubble -->
             <div id="ai-dialogue-eve">
                 <div id="ai-text-eve">Salom! Men SmartQiyos AI</div>
+                
+                <!-- Playback Controls -->
+                <div class="eve-controls-bar">
+                    <button onclick="toggleAIPlayback()" id="ai-play-pause-btn" title="Pause/Resume">
+                        <i class="fas fa-pause"></i>
+                    </button>
+                    <button onclick="stopAISpeaking()" id="ai-stop-btn" title="Stop">
+                        <i class="fas fa-stop"></i>
+                    </button>
+                    <button onclick="replayAISpeaking()" id="ai-replay-btn" title="Replay">
+                        <i class="fas fa-redo-alt"></i>
+                    </button>
+                    <div class="eve-divider"></div>
+                    <button onclick="toggleAIAutoplay()" id="ai-autoplay-btn" class="active" title="Auto-play On/Off">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                </div>
             </div>
 
             <!-- Status Messages (Right Side) -->

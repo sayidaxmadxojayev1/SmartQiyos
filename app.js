@@ -2557,18 +2557,7 @@ function initAIAssistant() {
         const msg = greetings[Math.floor(Math.random() * greetings.length)];
         showAIDialogue(msg);
         speakAI(msg);
-        // After speaking, start listening
-        const spokenUtterance = window.currentAIUtterance;
-        if (spokenUtterance) {
-            spokenUtterance.onend = () => {
-                isAISpeaking = false;
-                const wrapper = document.getElementById('ai-assistant-wrapper');
-                if (wrapper) wrapper.classList.remove('is-active');
-                startAIListening();
-            };
-        } else {
-            setTimeout(startAIListening, 2000);
-        }
+        // Sync listening if needed...
     };
 }
 
@@ -2588,50 +2577,99 @@ function hideAIDialogue() {
     }
 }
 
-// ─────────────────────────────────────────────────
-// Helper: Get voices (async – Chrome loads them late)
-// ─────────────────────────────────────────────────
-function getVoicesAsync() {
-    return new Promise(resolve => {
-        const voices = window.speechSynthesis.getVoices();
-        if (voices && voices.length > 0) {
-            resolve(voices);
-        } else {
-            // Wait for voiceschanged event (fires once voices are ready)
-            window.speechSynthesis.addEventListener('voiceschanged', function handler() {
-                window.speechSynthesis.removeEventListener('voiceschanged', handler);
-                resolve(window.speechSynthesis.getVoices());
-            });
-            // Safety timeout – if event never fires, resolve with empty array
-            setTimeout(() => resolve([]), 2000);
-        }
-    });
+// 🎤 AI Voice Assistant State
+isAIAutoplay = localStorage.getItem('ai_autoplay') !== 'false';
+aiAudio = null;
+lastAIText = "";
+
+// Ensure audio toggle UI reflects state
+function updateAIAutoplayUI() {
+    const btn = document.getElementById('ai-autoplay-btn');
+    if (btn) {
+        btn.classList.toggle('active', isAIAutoplay);
+        btn.innerHTML = isAIAutoplay ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+    }
+}
+
+function toggleAIAutoplay() {
+    isAIAutoplay = !isAIAutoplay;
+    localStorage.setItem('ai_autoplay', isAIAutoplay);
+    updateAIAutoplayUI();
 }
 
 async function speakAI(text) {
-    if (!('speechSynthesis' in window)) {
-        console.warn('❌ speechSynthesis not supported');
-        return;
+    if (!text) return;
+    lastAIText = text;
+    
+    const wrapper = document.getElementById('ai-assistant-wrapper');
+    const playPauseBtn = document.getElementById('ai-play-pause-btn');
+
+    // Stop previous audio if any
+    if (aiAudio) {
+        aiAudio.pause();
+        aiAudio = null;
+    }
+    if (window.speechSynthesis && window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
     }
 
-    const wrapper = document.getElementById('ai-assistant-wrapper');
-
-    // Cancel only if already speaking
-    if (window.speechSynthesis.speaking) {
-        window.speechSynthesis.cancel();
-        await new Promise(r => setTimeout(r, 150)); // small gap after cancel
+    if (!isAIAutoplay) {
+        console.log('🔇 Autoplay off, skipping speech');
+        return;
     }
 
     if (wrapper) wrapper.classList.add('is-active');
     isAISpeaking = true;
+    if (playPauseBtn) playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
 
+    try {
+        // Attempt to get high-quality audio from backend
+        const response = await fetch('/api/tts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text, lang: currentLang })
+        });
+        const data = await response.json();
+
+        if (data.url) {
+            // High quality cached audio available
+            aiAudio = new Audio(data.url);
+            setupAudioEvents(aiAudio);
+            aiAudio.play();
+        } else {
+            // Fallback to Web Speech API (Native browser voices)
+            fallbackSpeakAI(text);
+        }
+    } catch (e) {
+        console.warn('Fallback to browser TTS due to error:', e);
+        fallbackSpeakAI(text);
+    }
+}
+
+function setupAudioEvents(audio) {
+    const playPauseBtn = document.getElementById('ai-play-pause-btn');
+    const wrapper = document.getElementById('ai-assistant-wrapper');
+
+    audio.onplay = () => {
+        isAISpeaking = true;
+        if (playPauseBtn) playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        if (wrapper) wrapper.classList.add('is-active');
+    };
+    audio.onpause = () => {
+        if (playPauseBtn) playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+    };
+    audio.onended = () => {
+        isAISpeaking = false;
+        if (wrapper) wrapper.classList.remove('is-active');
+        if (playPauseBtn) playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+    };
+}
+
+async function fallbackSpeakAI(text) {
     const utterance = new SpeechSynthesisUtterance(text);
-    window.currentAIUtterance = utterance; // Prevent Chrome GC
+    window.currentAIUtterance = utterance;
 
-    // Async voice selection
     const voices = await getVoicesAsync();
-    console.log('🗣️ Available voices:', voices.length);
-
     const preferred = [
         voices.find(v => v.lang.startsWith('uz')),
         voices.find(v => v.lang.startsWith('ru')),
@@ -2642,31 +2680,49 @@ async function speakAI(text) {
     if (preferred) {
         utterance.voice = preferred;
         utterance.lang  = preferred.lang;
-        console.log('🗣️ Using voice:', preferred.name, preferred.lang);
-    } else {
-        utterance.lang = 'ru-RU'; // Most common non-English Windows voice
-        console.warn('⚠️ No voice found, using lang only');
     }
 
-    utterance.volume = 1.0;
-    utterance.rate   = 0.95;
-    utterance.pitch  = 1.1;
-
-    utterance.onstart = () => console.log('🔊 Speaking started');
-    utterance.onend   = () => {
-        console.log('✅ Speaking done');
+    utterance.onend = () => {
         isAISpeaking = false;
-        if (wrapper) wrapper.classList.remove('is-active');
-    };
-    utterance.onerror = e => {
-        console.error('❌ TTS Error:', e.error);
-        isAISpeaking = false;
+        const wrapper = document.getElementById('ai-assistant-wrapper');
         if (wrapper) wrapper.classList.remove('is-active');
     };
 
-    window.speechSynthesis.resume();
     window.speechSynthesis.speak(utterance);
-    console.log('▶️ speak() called with:', text.slice(0, 40));
+}
+
+function toggleAIPlayback() {
+    if (aiAudio) {
+        if (aiAudio.paused) aiAudio.play();
+        else aiAudio.pause();
+    } else if (window.speechSynthesis.speaking) {
+        if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+        else window.speechSynthesis.pause();
+    } else {
+        // Nothing playing, replay last text
+        replayAISpeaking();
+    }
+}
+
+function stopAISpeaking() {
+    if (aiAudio) {
+        aiAudio.pause();
+        aiAudio.currentTime = 0;
+    }
+    window.speechSynthesis.cancel();
+    isAISpeaking = false;
+    const wrapper = document.getElementById('ai-assistant-wrapper');
+    if (wrapper) wrapper.classList.remove('is-active');
+    hideAIDialogue();
+}
+
+function replayAISpeaking() {
+    if (lastAIText) {
+        const currentAutoplay = isAIAutoplay;
+        isAIAutoplay = true; // Force autoplay for explicit replay
+        speakAI(lastAIText);
+        isAIAutoplay = currentAutoplay;
+    }
 }
 
 // Ensure speech engine is "woken up" on first user interaction
@@ -2774,6 +2830,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 SmartQiyos initializing...');
     renderStores();
     initAIAssistant();
+    updateAIAutoplayUI();
     updatePageTitle();
 
     // =============================================

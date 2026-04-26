@@ -642,4 +642,49 @@
     font-weight: 700;
     color: white;
     line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+.eve-controls-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.eve-controls-bar button {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #00ffcc;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.eve-controls-bar button:hover {
+    background: rgba(0, 255, 204, 0.1);
+    border-color: #00ffcc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 255, 204, 0.2);
+}
+
+.eve-controls-bar button.active {
+    background: #00ffcc;
+    color: #001211;
+    border-color: #00ffcc;
+    box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+}
+
+.eve-divider {
+    width: 1px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0 4px;
 }
